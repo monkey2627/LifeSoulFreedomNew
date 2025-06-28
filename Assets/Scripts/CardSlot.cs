@@ -23,6 +23,14 @@ public class CardSlot : MonoBehaviour
         cards[(int)this.card].SetActive(false);
         this.card = card;
         cards[(int)this.card].SetActive(true);
+        //每次放入一个卡之后就判定一下是否能确认
+        option.Check();
+    }
+    public void RemoveCard()
+    {
+        hasCard = false;
+        cards[(int)card].SetActive(false);
+        option.Check();
     }
     // Update is called once per frame
     void Update()

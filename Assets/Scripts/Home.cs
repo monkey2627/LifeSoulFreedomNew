@@ -34,14 +34,24 @@ public class Home : MonoBehaviour
         //todo 出现选项框
         optionsNumber++;
     }
+
     //奔走的钟表
+    public GameObject OptionDes;
+    public GameObject ClockDes;
+    /// <summary>
+    /// 使用3张觉悟，此后5天，每日获得2张觉悟
+    /// </summary>
     public void ClockOne()
     {
-        if (GameManager.instance.cards[(int)Card.Awareness].number >= 3)
-        {
-            GameManager.instance.cards[(int)Card.Awareness].number -= 3;
-            GameManager.instance.doubleAwareness = true;
-        }
+        GameManager.instance.cards[(int)Card.Awareness].number -= 3;
+        GameManager.instance.doubleAwareness = true;
+        GameManager.instance.doubleAwarenessDay = 5;
+        ClockDes.SetActive(false);
+        OptionDes.SetActive(true);
+        Bag.instance.UpdateBag();
+        GameManager.instance.SubWorkPoint();
+            //todo 场景中钟表跑掉的动画
+        
     }
     //空白画布  
     /// <summary>

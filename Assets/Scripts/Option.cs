@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Option : MonoBehaviour
 {
+    public bool anyNormal = false;
+    public int anyNumber = 0;
     //该选项消耗的卡牌
     public Card[] cards;
     //该选项消耗的卡牌对应数量
@@ -31,6 +33,32 @@ public class Option : MonoBehaviour
     /// </summary>
     public bool Check()
     {
+        if (anyNormal)
+        {
+            int t = 0;
+            for (int i = 0; i < cardSlots.Count; i++)
+            {
+                if (cardSlots[i].hasCard)
+                {
+                    if (GameManager.instance.cards[(int)cardSlots[i].card].number >0
+                        && cardsNumber[(int)cardSlots[i].card] != 0)
+                    {
+                        t++;
+                    }
+                }
+            }
+            if(t == anyNumber)
+            {
+                ok.SetActive(true);
+                notOk.SetActive(false);
+                return true;
+            }
+            ok.SetActive(false);
+            notOk.SetActive(true);
+            return false;
+
+
+        }
         int[] a=new int[19];
         for(int i = 0; i < 19; i++)
         {
@@ -57,9 +85,14 @@ public class Option : MonoBehaviour
             
             if(a[i] != 0)
             {
+                ok.SetActive(false);
+                notOk.SetActive(true);
                 return false;
+               
             }
         }
+        ok.SetActive(true);
+        notOk.SetActive(false);
         return true;
     }
 
@@ -79,4 +112,33 @@ public class Option : MonoBehaviour
         }
         return false;
     }
+
+
+    public void SubCard()
+    {
+        if (anyNormal)
+        {
+            for (int i = 0; i < cardSlots.Count; i++)
+            {
+                if (cardSlots[i].hasCard)
+                {
+                    GameManager.instance.cards[(int)cardSlots[i].card].number -= 1;
+                }
+            }
+            Bag.instance.UpdateBag();
+            return;
+        }
+        for (int i = 0; i < cards.Length; i++)
+        {
+            
+            GameManager.instance.cards[(int)cards[i]].number -= cardsNumber[i];
+            
+        }
+        for (int i = 0; i < cardSlots.Count; i++)
+        {
+            cardSlots[i].RemoveCard();
+        }
+
+    }
+
 }

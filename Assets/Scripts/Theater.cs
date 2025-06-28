@@ -1,9 +1,17 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Theater : MonoBehaviour
 {
+    public GameObject pen;
+    public GameObject mask;
+    public GameObject drum;
+    public GameObject flower;
+    public GameObject badWords;
+    public GameObject lunPan;
+    public GameObject tanxi;
     int find()
     {
         while (true)
@@ -90,29 +98,47 @@ public class Theater : MonoBehaviour
     bool startGame = false;
     public GameObject[] sjb;
     //充满决心的圆珠笔（常驻)
+    public GameObject penOption;
+    public GameObject penDes;
+    public void ClickPen()
+    {
+       pen.transform.DORotate(new Vector3(0, 0, 10), 0.1f).OnComplete(() =>
+        {
+
+            pen.transform.DORotate(new Vector3(0, 0, -10), 0.2f).OnComplete(() =>
+            {
+
+                pen.transform.DORotate(new Vector3(0, 0, 10), 0.1f).OnComplete(() =>
+                {
+                    pen.transform.DORotate(new Vector3(0, 0, 0), 0.1f);
+
+                });
+            });
+
+        });
+        penOption.SetActive(true);
+        penDes.SetActive(true);
+    }
     /// <summary>
     /// 消耗一点行动点，使用一张觉悟获得信息和1金钱，可能（10%）获得争斗
     /// </summary>
     public void Pen1()
     {
-        GameManager.instance.cards[(int)Card.Awareness].number -= 1;
         GameManager.instance.cards[(int)Card.Information].number += 1;
         GameManager.instance.cards[(int)Card.Money].number += 1;
         int t = Random.Range(1, 11);
         if (t == 2)
         {
             GameManager.instance.cards[(int)Card.Fight].number += 1;
-
         }
+        GameManager.instance.SubWorkPoint();
+        Bag.instance.UpdateBag();
     }
     /// <summary>
     /// 消耗一点行动点，使用2张任意普通牌获得一张争斗或一张合作
     /// </summary>
     public void Pen2()
     {
-        GameManager.instance.cards[(int)Card.Awareness].number -= 1;
-        GameManager.instance.cards[(int)Card.Information].number += 1;
-        GameManager.instance.cards[(int)Card.Money].number += 1;
         int t = Random.Range(1, 3);
         if (t == 2)
         {
@@ -122,6 +148,8 @@ public class Theater : MonoBehaviour
         {
             GameManager.instance.cards[(int)Card.Cooperation].number += 1;
         }
+        GameManager.instance.SubWorkPoint();
+        Bag.instance.UpdateBag();
     }
     //荒芜花束
     /// <summary>
@@ -159,6 +187,7 @@ public class Theater : MonoBehaviour
     public void Back()
     {
         gameObject.SetActive(false);
-        mainMap.SetActive(true);    
+        mainMap.SetActive(true);
+        Bag.instance.detect = false;
     }
 }

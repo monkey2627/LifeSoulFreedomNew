@@ -9,11 +9,12 @@ public class GameManager : MonoBehaviour
     public TMP_Text workPointText;
     public int life;
     public TMP_Text lifeText;
-    public CardItem[] cards = new CardItem[19];
+    public CardItem[] cards = new CardItem[22];
     public static GameManager instance;
     public Role[] roles = new Role[11];
     //是否每日产生2张觉悟
     public bool doubleAwareness = false;
+    public int doubleAwarenessDay = 0;
     //是否每日获得一份金钱
     public bool getMoney = false;
     //免疫疯狂的剩余天数
@@ -46,20 +47,25 @@ public class GameManager : MonoBehaviour
         life += n;
         lifeText.text = life.ToString();
     }
-        //todo
     public void Init()
     {
         workPoint = 3;
         workPointText.text = workPoint.ToString();
         life = 7;
         lifeText.text = life.ToString();
-        for(int i = 0; i < cards.Length; i++)
+        for(int i = 0; i < 22; i++)
         {
             cards[i] = new CardItem { card =(Card)i,number = 0};
         }
         cards[(int)Card.Awareness].number = 3;
         Bag.instance.gameObject.SetActive(false);
     }
+    public GameObject ClockDay1;
+    public GameObject ClockDay1_4;
+    public GameObject ClockDay5;
+    public GameObject Sholve1;
+    public GameObject Sholve1_4;
+    public GameObject Sholve5;
     /// <summary>
     /// 减少行动值并检测是否进入下一天
     /// </summary>
@@ -69,20 +75,119 @@ public class GameManager : MonoBehaviour
         workPointText.text = workPoint.ToString();
         if(workPoint == 0)
         {
-            //弹出弹窗标志进入下一天
+            //刷新两个体力
+            workPoint = 3;
+            workPointText.text = workPoint.ToString();
+            life -= 1;
+            lifeText.text = life.ToString();
+            if (life > 0)
+            {
+                SolveDayHello();
+            }
         }
     }
+    public void SolveDayHello()
+    {
+        Bag.instance.gameObject.SetActive(false);
+        //先一个一个处理每日问候，加入hellos
+        //钟
+        if (cards[(int)Card.Hope].number > 0)
+        {
+            if (doubleAwareness)
+            {
+                if (doubleAwarenessDay == 1)
+                {
+                    hellos.Add(ClockDay5);
+                }
+                else
+                {
+                    hellos.Add(ClockDay1_4);
+                }
+            }
+            else
+            {
+                hellos.Add(ClockDay1);
+            }
+        }
+        if (doubleAwareness)
+        {
+            if (doubleAwarenessDay == 1)
+            {
+                hellos.Add(ClockDay5);
+            }
+            else
+            {
+                hellos.Add(ClockDay1_4);
+            }
+        }
+        else
+        {
+            hellos.Add(ClockDay1);
+        }
+        if (cards[(int)Card.Desperate].number > 0)
+        {
+            hellos.RemoveAt(hellos.Count - 1);
+        }
+        //园艺铲子
+        if (cards[(int)Card.Hope].number > 0)
+        {
+            if (creation2_creativity == 1)
+            {
+                hellos.Add(Sholve5);
+            }
+            else if (creation2_creativity > 0)
+            {
+                hellos.Add(Sholve1_4);
+            }
+            else if (creation_creativity)
+            {
+                hellos.Add(Sholve1);
+            }
+        }
+        if (creation2_creativity == 1)
+        {
+            hellos.Add(Sholve5);
+        }
+        else if (creation2_creativity > 0)
+        {
+            hellos.Add(Sholve1_4);
+        }
+        else if (creation_creativity)
+        {
+            hellos.Add(Sholve1);
+        }
+        if (cards[(int)Card.Desperate].number > 0)
+        {
+            hellos.RemoveAt(hellos.Count - 1);
+        }
 
+    
+}
+    public GameObject clock;
+    public GameObject sholve;
+    //每次把所有需要每日问候的东西加进去，按顺序来
+    public List<GameObject> hellos;
+    public void NextHello()
+    {
+        if(hellos.Count > 0)
+        {
+            hellos[0].SetActive(true);
+            hellos.RemoveAt(0);
+        }
+        else
+        {
+            //每日问候处理完了
+            NewDay();
+        }
+    }
     /// <summary>
-    /// 每一天开始时调用
+    /// 每一天开始在每日问候处理完调用
     /// 1.弹出弹窗，获得新卡牌
     /// 2.判定概率角色是否出现
     /// </summary>
     public void NewDay()
     {
-
-
-
+        Bag.instance.gameObject.SetActive(true);
         //呢喃的书页
         if(roles[(int)RoleName.Book].show == false)
         {
@@ -188,6 +293,42 @@ public class GameManager : MonoBehaviour
             chooseMask = false;
             Roulette.SetActive(false);
             CrazyFree -= 1;
+            doubleAwarenessDay -= 1;
+            if(doubleAwarenessDay == 0)
+            {
+                doubleAwareness = false;
+                clock.SetActive(true);
+            }
+            creation2_creativity -= 1;
+            if(creation2_creativity == 0)
+            {
+                sholve.SetActive(true);
+            }
+
+            if(cards[(int)Card.Hope].number > 0)
+            {
+                cards[(int)Card.Hope].number -= 1;
+            }
+            if (cards[(int)Card.Desperate].number > 0)
+            {
+                cards[(int)Card.Desperate].number -= 1;
+            }
+
+        }
+    }
+    public GameObject[] scenceEnters;
+    public void EnableAll()
+    {
+        for(int i = 0; i < scenceEnters.Length; i++)
+        {
+            scenceEnters[i].GetComponent<BoxCollider2D>().enabled = true;
+        }
+    }
+    public void DisableAll()
+    {
+        for (int i = 0; i < scenceEnters.Length; i++)
+        {
+            scenceEnters[i].GetComponent<BoxCollider2D>().enabled = false;
         }
     }
 

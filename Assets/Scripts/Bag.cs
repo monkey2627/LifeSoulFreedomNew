@@ -7,6 +7,10 @@ using UnityEngine;
 /// </summary>
 public class Bag : MonoBehaviour
 {
+    public void BeginDetect()
+    {
+        detect = true;
+    }
     public static Bag instance;
     private void Start()
     {
@@ -100,6 +104,7 @@ public class Bag : MonoBehaviour
         }
     }
 
+    public TMPro.TMP_Text[] texts;
     /// <summary>
     /// 每次卡牌发生数量变化时，需要更新一次背包的展示
     /// </summary>
@@ -107,6 +112,7 @@ public class Bag : MonoBehaviour
     {
        for(int i = 0; i < 19; i++)
        {
+            texts[i].text = GameManager.instance.cards[i].number.ToString();
              if (GameManager.instance.cards[i].number == 1 || GameManager.instance.cards[i].number == 0)
             {
                 bagCards[i * 2].SetActive(false);  
@@ -128,6 +134,8 @@ public class Bag : MonoBehaviour
     public GameObject[] changes;
     public void OpenBag()
     {
+        if (detect) return;
+
         UpdateBag();
         if (open == false && !isMove)
         {

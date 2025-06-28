@@ -12,12 +12,8 @@ public class WorkShop : MonoBehaviour
     public void Shovels1()
     {
 
-        if (GameManager.instance.cards[(int)Card.Awareness].number >= 1 )
-        {
             GameManager.instance.cards[(int)Card.Awareness].number -= 1;
             GameManager.instance.creation_creativity = true;
-            //todo 种下螺母怎么表示
-        }
     }
     /// <summary>
     /// 消耗一点行动点，使用一张觉悟和幸运获得一张创造

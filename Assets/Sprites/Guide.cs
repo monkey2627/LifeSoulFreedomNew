@@ -55,17 +55,23 @@ public class Guide : MonoBehaviour
     void ShowGuide12()
     {
         zhongbiao.SetActive(true);
+        guides[10].SetActive(false);
         guides[11].SetActive(true);
     }
     public GameObject Luodideng;
     public GameObject baoshi;
     public GameObject xingdongli1;
+    /// <summary>
+    /// 教程结束，开始第一天的游戏
+    /// </summary>
     public void ClickGuide12()
     {
         Luodideng.SetActive(false);
         Bag.instance.gameObject.SetActive(true);
         baoshi.SetActive(true);
         xingdongli1.SetActive(true);
+        zhongbiao.SetActive(false);
+        GameManager.instance.SolveDayHello();
     }
 }
 
