@@ -24,6 +24,7 @@ public class CardSlot : MonoBehaviour
         this.card = card;
         cards[(int)this.card].SetActive(true);
         //每次放入一个卡之后就判定一下是否能确认
+        VoiceManager.instance.InsertCard();
         option.Check();
     }
     public void RemoveCard()

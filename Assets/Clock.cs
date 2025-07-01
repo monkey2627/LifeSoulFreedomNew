@@ -7,6 +7,15 @@ using UnityEngine;
 /// </summary>
 public class Clock : MonoBehaviour
 {
+    public int type;
+    private void OnEnable()
+    {
+        if(type == 0)
+        GameManager.instance.cards[(int)Card.Awareness].number += 1;
+        else
+            GameManager.instance.cards[(int)Card.Awareness].number += 2;
+        Bag.instance.UpdateBag();
+    }
     /// <summary>
     /// 获得一张觉悟
     /// </summary>
@@ -14,6 +23,7 @@ public class Clock : MonoBehaviour
     {
         GameManager.instance.cards[(int)Card.Awareness].number++;
         gameObject.SetActive(false);
+        GameManager.instance.NextHello();
     }
     public GameObject guide;
 
@@ -22,8 +32,11 @@ public class Clock : MonoBehaviour
     /// </summary>
     public void Option2()
     {
-        guide.SetActive(true);
-        GameManager.instance.cards[(int)Card.Awareness].number -=3;
-        gameObject.SetActive(false);
+        if (GameManager.instance.cards[(int)Card.Awareness].number >= 3)
+        {
+            guide.SetActive(true);
+            GameManager.instance.cards[(int)Card.Awareness].number -= 3;
+            gameObject.SetActive(false);
+        }
     }
 }

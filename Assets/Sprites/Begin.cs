@@ -12,14 +12,15 @@ public class Begin : MonoBehaviour
     {
         //进行游戏初始化
         GameManager.instance.Init();
-        GetComponent<SpriteRenderer>().DOFade(0, 1).OnComplete(() =>
-        {
+        
+       
             MainMap.SetActive(true);
             Luodideng.SetActive(true);
             guides[0].SetActive(true);
-            Invoke("ShowGuide2",3);
-        }
-        );
+           
+            Invoke("ShowGuide2",3); gameObject.SetActive(false);
+       
+        
     }
     public void ShowGuide2()
     {

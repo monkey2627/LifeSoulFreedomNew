@@ -1,18 +1,27 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Menu : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject start;
+    public GameObject end;
+    public void EnterStart()
     {
-        
-    }
+        start.transform.DOScale(new Vector3(1.2f, 1.2f, 0), 0.2f);
 
-    // Update is called once per frame
-    void Update()
+    }
+    public void ExitStart()
     {
-        
+        start.transform.DOScale(new Vector3(1f, 1f, 0), 0.2f);
+    }
+    public void EnterEnd()
+    {
+        end.transform.DOScale(new Vector3(1.2f, 1.2f, 0), 0.2f);
+    }
+    public void ExitEnd()
+    {
+        end.transform.DOScale(new Vector3(1f, 1f, 0), 0.2f);
     }
 }

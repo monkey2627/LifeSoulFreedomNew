@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Card
+  - Plane
+  - CardIn
   layers:
   - Default
   - TransparentFX
@@ -44,4 +46,7 @@ TagManager:
     locked: 0
   - name: Popup
     uniqueID: 842061045
+    locked: 0
+  - name: DragCard
+    uniqueID: 1390711121
     locked: 0

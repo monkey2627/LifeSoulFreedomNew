@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
     public int workPoint;
-    public TMP_Text workPointText;
+    public GameObject[] workPoints;
     public int life;
-    public TMP_Text lifeText;
+    public GameObject[] lifes;
+  
     public CardItem[] cards = new CardItem[22];
     public static GameManager instance;
     public Role[] roles = new Role[11];
@@ -30,6 +32,8 @@ public class GameManager : MonoBehaviour
     //撕毁的卡牌数
     public int cardDestory = 0;
     int chooseMaskDay = 0;
+    //获得的清明总数
+    public int awakeNumber = 0;
     //概率出现的道具
     public GameObject Book;
     public GameObject Ink;
@@ -38,27 +42,117 @@ public class GameManager : MonoBehaviour
     public GameObject Roulette;
     public GameObject Flower;
     public GameObject BadWord;
-    void Start()
+
+    public bool TanChuangZhuangTai = false;
+
+    void Awake()
     {
         instance = this;
     }
     public void AddLife(int n)
     {
         life += n;
-        lifeText.text = life.ToString();
+        if (life > 7)
+            life = 7;
+        for(int i = 0; i < lifes.Length; i++){
+            lifes[i].SetActive(false);
+        }
+        lifes[life - 1].SetActive(true);
     }
+    public void Life()
+    {
+        for (int i = 0; i < lifes.Length; i++)
+        {
+            lifes[i].SetActive(false);
+        }
+        if(life>0)
+            lifes[life - 1].SetActive(true);
+    }
+    public void Work()
+    {
+        for (int i = 0; i < workPoints.Length; i++)
+        {
+            workPoints[i].SetActive(false);
+        }
+        if(workPoint>0)
+            workPoints[workPoint - 1].SetActive(true);
+    }
+    public GameObject UII;
+    public void NextDay()
+    {
+        if (TanChuangZhuangTai)
+            return;
+        //刷新两个体力
+        workPoint = 3;
+        life -= 1;
+        if (life == 0)
+        {
+            noLife.SetActive(true);
+        }
+        Work();
+        Life();
+        Debug.Log("next");
+        mainMap.SetActive(true);
+        home.SetActive(false);
+        lib.SetActive(false);
+        the.SetActive(false);
+        trade.SetActive(false);
+        garden.SetActive(false);
+        res.SetActive(false);
+        bridge.SetActive(false);
+        home.SetActive(false);
+        SolveDayHello();
+    }
+    public void NextDayMust()
+    {
+        //刷新两个体力
+        workPoint = 3;
+        life -= 1;
+        if (life == 0)
+        {
+            noLife.SetActive(true);
+        }
+        Work();
+        Life();
+        Debug.Log("next");
+        mainMap.SetActive(true);
+        home.SetActive(false);
+        lib.SetActive(false);
+        the.SetActive(false);
+        trade.SetActive(false);
+        garden.SetActive(false);
+        res.SetActive(false);
+        bridge.SetActive(false);
+        home.SetActive(false);
+        SolveDayHello();
+    }
+    /// <summary>
+    /// 在播放完动画之后会触发
+    /// </summary>
     public void Init()
     {
+        //刷新体力和饱腹
         workPoint = 3;
-        workPointText.text = workPoint.ToString();
+        Work();
         life = 7;
-        lifeText.text = life.ToString();
+        Life();
+        //刷新卡牌
         for(int i = 0; i < 22; i++)
         {
             cards[i] = new CardItem { card =(Card)i,number = 0};
         }
         cards[(int)Card.Awareness].number = 3;
+        //把背包关上，调整背包位置
         Bag.instance.gameObject.SetActive(false);
+        Bag.instance.gameObject.transform.position = new Vector3(9.05f, -0.3f, -1.6f);
+        //todo 清空所有特殊状态
+        if (Home.instance)
+            Home.instance.painted = false;
+        for(int i = 0; i < crazy.Length; i++)
+        {
+            crazy[i] = 0;
+        }
+        //todo 将所有场景还原为初始状态
     }
     public GameObject ClockDay1;
     public GameObject ClockDay1_4;
@@ -66,28 +160,41 @@ public class GameManager : MonoBehaviour
     public GameObject Sholve1;
     public GameObject Sholve1_4;
     public GameObject Sholve5;
+    public GameObject canvas;
+    public GameObject worldTree;
+
+    public GameObject noLife;
+    public GameObject noWorkPoint;
     /// <summary>
     /// 减少行动值并检测是否进入下一天
     /// </summary>
     public void SubWorkPoint()
     {
         workPoint -= 1;
-        workPointText.text = workPoint.ToString();
+        Work();
         if(workPoint == 0)
         {
+
             //刷新两个体力
             workPoint = 3;
-            workPointText.text = workPoint.ToString();
+            Work();
             life -= 1;
-            lifeText.text = life.ToString();
+            Life();
             if (life > 0)
             {
-                SolveDayHello();
+                noWorkPoint.SetActive(true);
+            }
+            else
+            {
+                noLife.SetActive(true);
             }
         }
     }
     public void SolveDayHello()
     {
+        Bag.instance.UpdateBag();
+        DisableAll();
+        Debug.Log("solveHello");
         Bag.instance.gameObject.SetActive(false);
         //先一个一个处理每日问候，加入hellos
         //钟
@@ -95,6 +202,7 @@ public class GameManager : MonoBehaviour
         {
             if (doubleAwareness)
             {
+               
                 if (doubleAwarenessDay == 1)
                 {
                     hellos.Add(ClockDay5);
@@ -106,6 +214,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+               
                 hellos.Add(ClockDay1);
             }
         }
@@ -114,14 +223,17 @@ public class GameManager : MonoBehaviour
             if (doubleAwarenessDay == 1)
             {
                 hellos.Add(ClockDay5);
+               
             }
             else
             {
                 hellos.Add(ClockDay1_4);
+               
             }
         }
         else
         {
+           
             hellos.Add(ClockDay1);
         }
         if (cards[(int)Card.Desperate].number > 0)
@@ -160,9 +272,46 @@ public class GameManager : MonoBehaviour
         {
             hellos.RemoveAt(hellos.Count - 1);
         }
+        //画布
+        if (cards[(int)Card.Hope].number > 0)
+        {
+            if (getMoney)
+            {
+                hellos.Add(canvas);
+            }
+        }
+        if (getMoney)
+        {
+            hellos.Add(canvas);   
+        }
+        if (cards[(int)Card.Desperate].number > 0)
+        {
+            hellos.RemoveAt(hellos.Count - 1);
+        }
+        //世界树
+        if (cards[(int)Card.Hope].number > 0)
+        {
+            if (getInf)
+            {
+                hellos.Add(worldTree);
+            }
+        }
+        if (getInf)
+        {
+            hellos.Add(worldTree);
+        }
+        if (cards[(int)Card.Desperate].number > 0)
+        {
+            hellos.RemoveAt(hellos.Count - 1);
+        }
+        if (hellos.Count > 0)
+        {
+            hellos[0].SetActive(true);
+            hellos.RemoveAt(0);
+        }
+        
 
-    
-}
+    }
     public GameObject clock;
     public GameObject sholve;
     //每次把所有需要每日问候的东西加进去，按顺序来
@@ -180,27 +329,122 @@ public class GameManager : MonoBehaviour
             NewDay();
         }
     }
+    public GameObject lib;
+    public GameObject bridge;
+    public GameObject the;
+    public GameObject res;
+    public GameObject trade;
+    public GameObject garden;
+    public GameObject home;
+    public GameObject mainMap;
+    public void ClickLib()
+    {
+        if (!enable) return;
+        lib.SetActive(true);
+        mainMap.SetActive(false);
+        VoiceManager.instance.IntoScene();
+        OpenScence();
+    }
+    public void ClickBri()
+    {
+        if (!enable) return;
+        bridge.SetActive(true);
+        mainMap.SetActive(false);
+        OpenScence();
+    }
+    public void ClickThe()
+    {
+        if (!enable) return;
+        the.SetActive(true);
+        mainMap.SetActive(false);
+        VoiceManager.instance.IntoScene();
+        OpenScence();
+    }
+    public void Clickres()
+    {
+        if (!enable) return;
+        res.SetActive(true);
+        mainMap.SetActive(false);
+        VoiceManager.instance.IntoScene();
+        OpenScence();
+    }
+    public void ClickTrade()
+    {
+        if (!enable) return;
+        trade.SetActive(true);
+        mainMap.SetActive(false);
+        VoiceManager.instance.IntoScene();
+        OpenScence();
+    }
+    public void ClickGar()
+    {
+      
+        if (!enable) return;  
+        Debug.Log("1");
+        garden.SetActive(true);
+        mainMap.SetActive(false);
+        VoiceManager.instance.IntoScene();
+        OpenScence();
+    }
+    public void ClickHOme()
+    {
+        if (!enable) return;
+        home.SetActive(true);
+        mainMap.SetActive(false);
+        VoiceManager.instance.IntoScene();
+        OpenScence();
+    }
+    public void OpenScence()
+    {
+        Debug.Log("openScene");
+        Bag.instance.UpdateBag();
+        Bag.instance.detect = true;
+        Bag.instance.transform.DOMove(new Vector3(5.49f, -0.3f, -1.6f), 2).OnComplete(() => {
+            Bag.instance.changes[0].SetActive(true);
+            Bag.instance.changes[1].SetActive(true);
+            Bag.instance.changes[2].SetActive(true);
+        });
+        Bag.instance.open = true;
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Exit();
+        }
+    }
     /// <summary>
     /// 每一天开始在每日问候处理完调用
-    /// 1.弹出弹窗，获得新卡牌
-    /// 2.判定概率角色是否出现
+    /// 1.判定概率角色是否出现
+    /// 根据相关选项bool值更新npc的行为
     /// </summary>
     public void NewDay()
     {
+
         Bag.instance.gameObject.SetActive(true);
+        Bag.instance.UpdateBag();
+        #region home
+        //奔走的钟表
+        doubleAwarenessDay -= 1;
+        if (doubleAwarenessDay == 0)
+        {
+            doubleAwareness = false;
+            clock.SetActive(true);
+            clock.transform.localPosition = new Vector3(-0.47f, 1.6f, 0);
+        }
+        #endregion
+        #region 图书馆
         //呢喃的书页
-        if(roles[(int)RoleName.Book].show == false)
+        if (roles[(int)RoleName.Book].show == false)
         {
             int t = Random.Range(1, 3);
             if (t == 2)
             {
                 roles[(int)RoleName.Book].show = true;
-                roles[(int)RoleName.Book].remain = 1;
+                roles[(int)RoleName.Book].remain = 2;
                 Book.SetActive(true);
             }
-        }
-        else
-        {
+        }else{
             roles[(int)RoleName.Book].remain -= 1;
             if(roles[(int)RoleName.Book].remain == 0)
             {
@@ -215,7 +459,7 @@ public class GameManager : MonoBehaviour
             if (t == 2)
             {
                 roles[(int)RoleName.Ink].show = true;
-                roles[(int)RoleName.Ink].remain = 1;
+                roles[(int)RoleName.Ink].remain = 2;
                 Ink.SetActive(true);
             }
         }
@@ -228,28 +472,34 @@ public class GameManager : MonoBehaviour
                 Ink.SetActive(false);
             }
         }
+        #endregion
+        #region 角斗场
         //妒火的面具
         if (chooseMask && chooseMaskDay < 3)
         {
             roles[(int)RoleName.Mask].show = true;
             Mask.SetActive(true);
+            chooseMask = false;
             chooseMaskDay++;
         }
-        else
-        {
+        else {
             int t = Random.Range(1, 3);
             if (t == 2)
             {
                 roles[(int)RoleName.Mask].show = true;
                 Mask.SetActive(true);
                 chooseMaskDay = 1;
+                chooseMask = false;
             }
             else
             {
                 roles[(int)RoleName.Mask].show = false;
                 Mask.SetActive(false);
+                chooseMask = false;
             }
         }
+        //叹息之幕
+        CrazyFree -= 1; 
         //挑衅的鼓
         if (roles[(int)RoleName.Drum].show == false)
         {
@@ -257,7 +507,7 @@ public class GameManager : MonoBehaviour
             if (t == 2)
             {
                 roles[(int)RoleName.Drum].show = true;
-                roles[(int)RoleName.Drum].remain = 1;
+                roles[(int)RoleName.Drum].remain = 2;
                 Drum.SetActive(true);
             }
         }
@@ -270,68 +520,85 @@ public class GameManager : MonoBehaviour
                 Drum.SetActive(false);
             }
         }
+        //轮盘每天需要复原
+        Roulette.GetComponent<SpriteRenderer>().DOFade(0, 0.1f);
+        Roulette.transform.localScale = new Vector3(0,0,0);
+        if (Theater.instance)
+        {
+            Theater.instance.isLunpan = false;
+        }
         //荒芜花束,免疫疯狂结束时25%概率出现，每次出现一天
         Flower.SetActive(false);
-        if (CrazyFree == 1)
+        if (CrazyFree == 0)
         {
             int t = Random.Range(1, 5);
             if (t == 2)
             {
                 roles[(int)RoleName.Flower].show = true;
                 Flower.SetActive(true);
+                Theater.instance.flowerFirstClick = true;
             }
         }
-        
         //游荡恶语（撕毁2张随机普通牌后出现，每次出现一天）
         BadWord.SetActive(false);
         if(cardDestory %2 ==0 && cardDestory != 0)
         {
             roles[(int)RoleName.BadWord].show = true;
             BadWord.SetActive(true);
-        }        
-        {
-            chooseMask = false;
-            Roulette.SetActive(false);
-            CrazyFree -= 1;
-            doubleAwarenessDay -= 1;
-            if(doubleAwarenessDay == 0)
-            {
-                doubleAwareness = false;
-                clock.SetActive(true);
-            }
-            creation2_creativity -= 1;
-            if(creation2_creativity == 0)
-            {
-                sholve.SetActive(true);
-            }
-
-            if(cards[(int)Card.Hope].number > 0)
-            {
-                cards[(int)Card.Hope].number -= 1;
-            }
-            if (cards[(int)Card.Desperate].number > 0)
-            {
-                cards[(int)Card.Desperate].number -= 1;
-            }
-
+            cardDestory = 0;
+            Theater.instance.badWordFirstClick = true;
         }
+        //希望绝望效果
+        if (cards[(int)Card.Hope].number > 0)
+        {
+            cards[(int)Card.Hope].number -= 1;
+        }
+        if (cards[(int)Card.Desperate].number > 0)
+        {
+            cards[(int)Card.Desperate].number -= 1;
+        }
+        #endregion
+        #region 工坊   
+        creation2_creativity -= 1;
+        #endregion
+        EnableAll();
     }
-    public GameObject[] scenceEnters;
+    public int[] crazy = new int[1500];
+    public GameObject lunPan;
+    public bool enable = false;
     public void EnableAll()
     {
-        for(int i = 0; i < scenceEnters.Length; i++)
-        {
-            scenceEnters[i].GetComponent<BoxCollider2D>().enabled = true;
-        }
+        enable = true;
+        
     }
     public void DisableAll()
     {
-        for (int i = 0; i < scenceEnters.Length; i++)
-        {
-            scenceEnters[i].GetComponent<BoxCollider2D>().enabled = false;
-        }
+        enable = false;
+       
     }
+    public void Restart()
+    {
+        UII.SetActive(false);
+        meun.SetActive(true);
+        mainMap.SetActive(false);
+        lib.SetActive(false);
+        the.SetActive(false);
+        res.SetActive(false);
+        home.SetActive(false);
+        garden.SetActive(false);
+        bridge.SetActive(false);
+        trade.SetActive(false);
+    }
+    public GameObject meun;
+    public void Exit()
+    {
 
+            #if UNITY_EDITOR
+                    UnityEditor.EditorApplication.isPlaying = false;
+            #else
+                Application.Quit();
+            #endif
+    }
 }
 public enum RoleName
 {

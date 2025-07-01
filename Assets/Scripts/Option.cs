@@ -28,6 +28,13 @@ public class Option : MonoBehaviour
             }
         }
     }
+    public void ClearAllSlot()
+    {
+        for (int i = 0; i < cardSlots.Count; i++)
+        {
+            cardSlots[i].RemoveCard();
+        }
+    }
     /// <summary>
     /// 检查牌是否满足要求
     /// </summary>
@@ -40,8 +47,7 @@ public class Option : MonoBehaviour
             {
                 if (cardSlots[i].hasCard)
                 {
-                    if (GameManager.instance.cards[(int)cardSlots[i].card].number >0
-                        && cardsNumber[(int)cardSlots[i].card] != 0)
+                    if (GameManager.instance.cards[(int)cardSlots[i].card].number >0)
                     {
                         t++;
                     }
@@ -72,8 +78,8 @@ public class Option : MonoBehaviour
         {
             if (cardSlots[i].hasCard)
             {
-                if (GameManager.instance.cards[(int)cardSlots[i].card].number >= cardsNumber[(int)cardSlots[i].card]
-                    && cardsNumber[(int)cardSlots[i].card] != 0)
+                if (GameManager.instance.cards[(int)cardSlots[i].card].number >= cardsNumber[i]
+                    && cardsNumber[i] != 0)
                 { 
                     a[(int)cardSlots[i].card]--; 
                 }

@@ -15,6 +15,7 @@ public class Bag : MonoBehaviour
     private void Start()
     {
         instance = this;
+        gameObject.SetActive(false);
     }
     //代表卡牌的sprite，在拖动时显示，顺序同enum顺序
     public GameObject[] cards;
@@ -24,20 +25,26 @@ public class Bag : MonoBehaviour
     //背包中展示的sprite，每三个为一组
     public GameObject[] bagCards;
 
-    int dragCardNow = -1;
+    public int dragCardNow = -1;
+    public GameObject plane;
     private Vector3 GetMouseWorldPosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Plane plane = new Plane(Vector3.up, Vector3.zero); // 创建一个水平平面
-
-        float distance;
-        if (plane.Raycast(ray, out distance))
-        {
-            return ray.GetPoint(distance); // 返回鼠标在世界空间中的位置
+        RaycastHit hit;
+        // 发射射线，检测前方物体
+        if (Physics.Raycast(ray, out hit, 100f)) // 100f 是射线的最大检测距离
+        { 
+            if(hit.collider.gameObject.tag == "Plane")
+            {
+                return hit.point;
+            }
+        
         }
 
-        return Vector3.zero; // 如果没有交点，返回原点
+        return cards[dragCardNow].transform.position; // 如果没有交点，返回原点
     }
+    public bool MoveOut = false;
+    public CardSlot outSlot = null;
     private void Update()
     {
         //在游戏中，需要检测拖动
@@ -45,31 +52,71 @@ public class Bag : MonoBehaviour
         {
             if(dragCardNow != -1)
             {
-                cards[dragCardNow].transform.position = GetMouseWorldPosition();
+                if (Input.GetMouseButton(0))
+                { 
+                    cards[dragCardNow].transform.position = GetMouseWorldPosition();
+                }
+                
             }
             // 检测鼠标左键点击
             if (Input.GetMouseButtonDown(0))
             {
+                
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
                 // 发射射线，检测前方物体
                 if (Physics.Raycast(ray, out hit, 100f)) // 100f 是射线的最大检测距离
                 {
+      
+                    Debug.Log(hit.collider.name);
                     if (hit.collider.gameObject.tag == "Card")
                     {
+                        Debug.Log("haha");
                         if (GameManager.instance.cards[int.Parse(hit.collider.gameObject.name)].number > 0)
                         {
+                            Debug.Log(int.Parse(hit.collider.gameObject.name));
+                            Debug.Log(GameManager.instance.cards[int.Parse(hit.collider.gameObject.name)].number);
                             dragCardNow = int.Parse(hit.collider.gameObject.name);
                             cards[dragCardNow].SetActive(true);
+
                             cards[dragCardNow].transform.position = GetMouseWorldPosition();
                         }
+                    }
+                    else if(hit.collider.gameObject.tag == "CardIn")
+                        //是把牌从里面拖出来
+                    {
+                        dragCardNow = int.Parse(hit.collider.gameObject.name);
+                        cards[dragCardNow].SetActive(true);
+                        cards[dragCardNow].transform.position = GetMouseWorldPosition();
+                        outSlot = hit.collider.transform.parent.GetComponent<CardSlot>();
+                        outSlot.RemoveCard();
+                        MoveOut = true;
                     }
                 }
 
             }
-            else if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0))
             {
                 if (dragCardNow != -1) {
+
+                    if (MoveOut)
+                    {
+                        if ((outSlot.transform.position - cards[dragCardNow].transform.position).magnitude < 0.5f)
+                        {
+
+                            MoveOut = false;
+                            outSlot.PushCard((Card)dragCardNow);
+                            outSlot = null;
+                        }
+                        else
+                        {
+                            MoveOut = false;
+                            outSlot = null;
+                        }
+                        cards[dragCardNow].SetActive(false);
+                        dragCardNow = -1;
+                        return;
+                    }
                     //首先找到离其一定距离的卡槽
                     CardSlot[] allObjects = GameObject.FindObjectsOfType<CardSlot>();
                     int t = 0;
@@ -95,15 +142,28 @@ public class Bag : MonoBehaviour
                             allObjects[t].PushCard((Card)dragCardNow);
                         }
                     }
+                    else
+                    {
+                        cards[dragCardNow].SetActive(false);
+                        dragCardNow = -1;
+                    }
                     //松手判定吸附，找到离其最近且active的卡槽
                     //判定active的每一个选项check
+                    if (dragCardNow != -1)
+                    {
+                        cards[dragCardNow].SetActive(false);
+                        dragCardNow = -1;
+                    }
                 } 
+
+
             }
 
 
         }
     }
 
+    public GameObject[] cs;
     public TMPro.TMP_Text[] texts;
     /// <summary>
     /// 每次卡牌发生数量变化时，需要更新一次背包的展示
@@ -113,19 +173,25 @@ public class Bag : MonoBehaviour
        for(int i = 0; i < 19; i++)
        {
             texts[i].text = GameManager.instance.cards[i].number.ToString();
-             if (GameManager.instance.cards[i].number == 1 || GameManager.instance.cards[i].number == 0)
+             if (GameManager.instance.cards[i].number == 1)
             {
+                cs[i].SetActive(true);
                 bagCards[i * 2].SetActive(false);  
                 bagCards[i * 2+1].SetActive(false);    
             }else if (GameManager.instance.cards[i].number == 2)
             {
+                cs[i].SetActive(true);
                 bagCards[i * 2].SetActive(true);
                 bagCards[i * 2 + 1].SetActive(false);
             }
             else if(GameManager.instance.cards[i].number >=3)
             {
+                cs[i].SetActive(true);
                 bagCards[i * 2].SetActive(true);
                 bagCards[i * 2 + 1].SetActive(true);
+            }else if ( GameManager.instance.cards[i].number == 0)
+            {
+                cs[i].SetActive(false);
             }
         }
     }
@@ -134,18 +200,20 @@ public class Bag : MonoBehaviour
     public GameObject[] changes;
     public void OpenBag()
     {
+        Debug.Log("move");
         if (detect) return;
 
         UpdateBag();
         if (open == false && !isMove)
         {
             isMove = true;
-            transform.DOMove(new Vector3(12.46f, 0.7f, 0), 2).OnComplete(()=> { isMove = false;
+            transform.DOMove(new Vector3(5.49f, -0.3f, -1.6f), 2).OnComplete(()=> { isMove = false;
                 changes[0].SetActive(true);
                 changes[1].SetActive(true);
                 changes[2].SetActive(true);
             });
             open = true;
+            VoiceManager.instance.OpenBag();
         }
         else if(!isMove)
         {
@@ -153,9 +221,10 @@ public class Bag : MonoBehaviour
             changes[0].SetActive(false);
             changes[1].SetActive(false);
             changes[2].SetActive(false);
-            transform.DOMove(new Vector3(16.24f, 0.7f, 0), 2).OnComplete(() => { isMove = false;  
+            transform.DOMove(new Vector3(9.05f, -0.3f, -1.6f), 2).OnComplete(() => { isMove = false;  
             }); ;
             open = false;
+            VoiceManager.instance.CloseBag();
         }
     }
 }
