@@ -47,10 +47,11 @@ public class VoiceManager : MonoBehaviour
         main.loop = true;
         main.Play();
     }
+    public AudioClip BridgeBG;
     public void Bridge()
     {
         Debug.Log("Brideg");
-        main.clip = river;
+        main.clip = BridgeBG;
         main.loop = true;
         main.Play();
     }

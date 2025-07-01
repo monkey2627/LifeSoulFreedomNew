@@ -46,10 +46,14 @@ public class WorkShop : MonoBehaviour
         sOptDes1.SetActive(false);
         sOptDes2.SetActive(false);
         sOptDes3.SetActive(false);
-        if (GameManager.instance.creation_creativity || GameManager.instance.creation2_creativity > 0)
+        if (GameManager.instance.creation2_creativity > 0)
         {
             sOptDes4.SetActive(true);
             sOption2.SetActive(true);
+        }else if(GameManager.instance.creation_creativity)
+        {
+            sOption3.SetActive(true);
+            sOptDes4.SetActive(true);
         }
         else
         {
@@ -59,14 +63,16 @@ public class WorkShop : MonoBehaviour
     }
     public GameObject sOptDes4;
     public GameObject sOption2;
+    public GameObject sOption3;
     public void Shovels1()
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         sDes.SetActive(false);
         sOptDes1.SetActive(true);
+        sOption2.SetActive(false);
         sOption.SetActive(false);
-        sOption2.SetActive(true);
+        sOption3.SetActive(true);
         GameManager.instance.creation_creativity = true;
         GameManager.instance.SubWorkPoint();
         Bag.instance.UpdateBag();
@@ -98,6 +104,7 @@ public class WorkShop : MonoBehaviour
         sDes.SetActive(false);
         sOptDes3.SetActive(true);
         sOption.SetActive(false);
+        sOption3.SetActive(false);
         sOption2.SetActive(true);
         GameManager.instance.cards[(int)Card.Cooperation].number += 1;
         GetPopup.instance.ShowGets(10);

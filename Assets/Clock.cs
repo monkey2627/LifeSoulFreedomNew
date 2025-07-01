@@ -10,10 +10,14 @@ public class Clock : MonoBehaviour
     public int type;
     private void OnEnable()
     {
-        if(type == 0)
-        GameManager.instance.cards[(int)Card.Awareness].number += 1;
+        if (type == 0)
+        {
+            GameManager.instance.cards[(int)Card.Awareness].number += 1;
+        }
         else
-            GameManager.instance.cards[(int)Card.Awareness].number += 2;
+        { 
+            GameManager.instance.cards[(int)Card.Awareness].number += 2; 
+        }
         Bag.instance.UpdateBag();
     }
     /// <summary>

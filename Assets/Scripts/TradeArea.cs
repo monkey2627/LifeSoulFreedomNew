@@ -236,8 +236,6 @@ public class TradeArea : MonoBehaviour
         cDes.SetActive(false);
         cOptDes2.SetActive(true);
         Bag.instance.UpdateBag();
-        GameManager.instance.SubWorkPoint();
-
     }/// <summary>
      /// 消耗一点行动点，使用一张觉悟和一张造物，获得4金钱，可能（25%）获得合作
      /// </summary>

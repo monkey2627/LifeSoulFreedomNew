@@ -452,6 +452,10 @@ public class Theater : MonoBehaviour
         sjb[4].SetActive(true);
         sjb[5].SetActive(true);
         sjb[6].SetActive(true);
+        winPanel.SetActive(false);
+        losePanel.SetActive(false);
+        samePanel.SetActive(false);
+        doublePanel.SetActive(false);
         GameManager.instance.SubWorkPoint();
     }
     public GameObject winPanel;
