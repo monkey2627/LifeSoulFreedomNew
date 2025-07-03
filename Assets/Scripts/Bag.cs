@@ -7,6 +7,8 @@ using UnityEngine;
 /// </summary>
 public class Bag : MonoBehaviour
 {
+
+
     public void BeginDetect()
     {
         detect = true;
@@ -16,6 +18,8 @@ public class Bag : MonoBehaviour
     {
         instance = this;
         gameObject.SetActive(false);
+        GameManager.instance.cards[(int)Card.Money].number = 2;
+        GameManager.instance.cards[(int)Card.Awareness].number = 2;
     }
     //代表卡牌的sprite，在拖动时显示，顺序同enum顺序
     public GameObject[] cards;
@@ -34,7 +38,7 @@ public class Bag : MonoBehaviour
         // 发射射线，检测前方物体
         if (Physics.Raycast(ray, out hit, 100f)) // 100f 是射线的最大检测距离
         { 
-            if(hit.collider.gameObject.tag == "Plane")
+            if(hit.collider.gameObject.tag == "Plane" || hit.collider.gameObject.tag == "Card")
             {
                 return hit.point;
             }
@@ -47,6 +51,16 @@ public class Bag : MonoBehaviour
     public CardSlot outSlot = null;
     private void Update()
     {
+        if (GameManager.instance.TanChuangZhuangTai)
+        {
+            if (dragCardNow != -1)
+            {
+                cards[dragCardNow].SetActive(false);
+                dragCardNow = -1;
+            }
+            return;
+        }
+          
         //在游戏中，需要检测拖动
         if (detect)
         {
@@ -55,20 +69,31 @@ public class Bag : MonoBehaviour
                 if (Input.GetMouseButton(0))
                 { 
                     cards[dragCardNow].transform.position = GetMouseWorldPosition();
+                    //所有的卡槽显示的卡位置改变
+                    CardSlot[] allObjects = GameObject.FindObjectsOfType<CardSlot>();
+                    foreach (var item in allObjects)
+                    {
+                        item.MoveCardBack();
+                    }
                 }
                 
             }
             // 检测鼠标左键点击
             if (Input.GetMouseButtonDown(0))
             {
-                
+
+                CardSlot[] allObjects = GameObject.FindObjectsOfType<CardSlot>();
+                foreach (var item in allObjects)
+                {
+                    item.MoveCardUp();
+                }
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
                 // 发射射线，检测前方物体
                 if (Physics.Raycast(ray, out hit, 100f)) // 100f 是射线的最大检测距离
                 {
       
-                    Debug.Log(hit.collider.name);
+                   // Debug.Log(hit.collider.name);
                     if (hit.collider.gameObject.tag == "Card")
                     {
                         Debug.Log("haha");
@@ -97,6 +122,11 @@ public class Bag : MonoBehaviour
             }
             if (Input.GetMouseButtonUp(0))
             {
+                CardSlot[] allObjects = GameObject.FindObjectsOfType<CardSlot>();
+                foreach (var item in allObjects)
+                {
+                    item.MoveCardUp();
+                }
                 if (dragCardNow != -1) {
 
                     if (MoveOut)
@@ -118,7 +148,7 @@ public class Bag : MonoBehaviour
                         return;
                     }
                     //首先找到离其一定距离的卡槽
-                    CardSlot[] allObjects = GameObject.FindObjectsOfType<CardSlot>();
+                    allObjects = GameObject.FindObjectsOfType<CardSlot>();
                     int t = 0;
                     float s = 10000;
                     for (int i = 0; i < allObjects.Length; i++)

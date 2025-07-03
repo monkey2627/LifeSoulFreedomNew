@@ -84,6 +84,34 @@ public class VoiceManager : MonoBehaviour
         two.loop = false;
         two.Play();
     }
+    /// <summary>
+    /// 标题界面中，鼠标经过选项时播放“鼠标经过选项”。点击选项时播放“confirm”
+    /// </summary>
+    public AudioClip mousePass;
+    public void MousePass()
+    {
+        two.clip = mousePass;
+        two.loop = false;
+        two.Play();
+    }
+    public AudioClip mouseConfirm;
+    public void MouseConfirm()
+    {
+        two.clip = mouseConfirm;
+        two.loop = false;
+        two.Play();
+    }
+
+    public void PlayMain()
+    {
+        main.clip = mainBack;
+        main.loop = true;
+        main.Play();
+    }
+    public void StopMain()
+    {
+        main.clip = null;
+    }
     public void CloseScence()
     {
         two.clip = closeScence;

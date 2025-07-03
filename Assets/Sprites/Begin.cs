@@ -8,6 +8,12 @@ public class Begin : MonoBehaviour
     public GameObject MainMap;
     public GameObject Luodideng;
     public GameObject[] guides;
+    private void OnEnable()
+    {
+        
+        VoiceManager.instance.main.clip = null;
+     
+    }
     public void CloseBegin()
     {
         //进行游戏初始化

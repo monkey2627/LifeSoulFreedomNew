@@ -94,9 +94,11 @@ public class Home : MonoBehaviour
         ClockDes.SetActive(false);
         clockOpt1.SetActive(true);
         clockOpt.SetActive(false);
-        Bag.instance.UpdateBag(); 
+        Bag.instance.UpdateBag();
+        clock.GetComponent<SpriteRenderer>().DOFade(0, 1f);
         clock.transform.DOLocalMove(new Vector3(-2.85f,1.6f,0), 1f).OnComplete(()=> { 
           GameManager.instance.SubWorkPoint();
+          
         });
     }
     //¿Õ°×»­²¼  
@@ -193,6 +195,12 @@ public class Home : MonoBehaviour
         gameObject.SetActive(false);
         MainMap.instance.gameObject.SetActive(true); 
         VoiceManager.instance.CloseScence();
+        Bag.instance.detect = false;
+        clock.GetComponent<Npc>().CloseAll();
+        canvas.GetComponent<Npc>().CloseAll();
+    }
+    private void OnDisable()
+    {
         Bag.instance.detect = false;
         clock.GetComponent<Npc>().CloseAll();
         canvas.GetComponent<Npc>().CloseAll();

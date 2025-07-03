@@ -59,6 +59,8 @@ public class Library : MonoBehaviour
             return;
         GameManager.instance.cards[(int)Card.Knowledge].number += 1;
         bookDes.SetActive(false);
+        bookOptDes2.SetActive(false);
+        bookOptDes3.SetActive(false);
         bookOptDes1.SetActive(true);
         Bag.instance.UpdateBag();
         GetPopup.instance.ShowGets(4);
@@ -90,19 +92,21 @@ public class Library : MonoBehaviour
             GetPopup.instance.work = true;
         }
         Debug.Log(GameManager.instance.cards[(int)Card.Knowledge].number);
+        bookOptDes1.SetActive(false);
+        bookOptDes3.SetActive(false);
         bookDes.SetActive(false);
         bookOptDes2.SetActive(true);
         Bag.instance.UpdateBag();
     }
     /// <summary>
-    /// 消耗一点行动点，用3份墨水换取一份信息/求知/幸运（50%/25%/25%）
+    /// 消耗一点行动点，用3份墨水换取一份信息/求知/幸运（10%/10%/80%））
     /// </summary>
     public void Book3()
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
-        int t = Random.Range(1, 5);
-        if (t == 2 || t == 1)
+        int t = Random.Range(1, 11);
+        if (t == 2)
         {
             GameManager.instance.cards[(int)Card.Information].number += 1;
             GetPopup.instance.ShowGets(8);
@@ -116,7 +120,7 @@ public class Library : MonoBehaviour
             GetPopup.instance.gameObject.SetActive(true);
             GetPopup.instance.work = true;
         }
-        else if (t == 4)
+        else 
         {
             GameManager.instance.cards[(int)Card.Luck].number += 1;
             GetPopup.instance.ShowGets(13);
@@ -124,6 +128,8 @@ public class Library : MonoBehaviour
             GetPopup.instance.work = true;
         }
         bookDes.SetActive(false);
+        bookOptDes1.SetActive(false);
+        bookOptDes2.SetActive(false);
         bookOptDes3.SetActive(true);
         Bag.instance.UpdateBag();
     }
@@ -175,6 +181,8 @@ public class Library : MonoBehaviour
             return;
         GameManager.instance.cards[(int)Card.KnowledgeSeek].number += 1;
         inkDes.SetActive(false);
+        inkOptDes2.SetActive(false);
+        inkOptDes3.SetActive(false);
         inkOptDes1.SetActive(true);
         Bag.instance.UpdateBag();
         GetPopup.instance.ShowGets(5);
@@ -182,16 +190,18 @@ public class Library : MonoBehaviour
         GetPopup.instance.work = true;
     }
     /// <summary>
-    /// 消耗一点行动点，可能（10%）获得墨水
+    /// 消耗一点行动点，可能（25%）获得墨水
     /// </summary>
     public void Ink2()
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         inkDes.SetActive(false);
+        inkOptDes1.SetActive(false);
+        inkOptDes3.SetActive(false);
         inkOptDes2.SetActive(true);
-        int t = Random.Range(1, 11);
-        if(t == 2)
+        int t = Random.Range(1, 5);
+        if (t == 2)
         {
             GameManager.instance.cards[(int)Card.Ink].number += 1;
             GetPopup.instance.ShowGets(11);
@@ -200,7 +210,10 @@ public class Library : MonoBehaviour
             Bag.instance.UpdateBag();
             return;
         }
-        GameManager.instance.SubWorkPoint();
+        else
+        {
+            GameManager.instance.SubWorkPoint();
+        }
         Bag.instance.UpdateBag();
     }
     /// <summary>
@@ -211,6 +224,8 @@ public class Library : MonoBehaviour
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         inkDes.SetActive(false);
+        inkOptDes1.SetActive(false);
+        inkOptDes2.SetActive(false);
         inkOptDes3.SetActive(true);
         int t = Random.Range(1, 3);
             if (t == 2)
@@ -354,7 +369,6 @@ public class Library : MonoBehaviour
         gameObject.SetActive(false);
         MainMap.instance.gameObject.SetActive(true);
         Bag.instance.detect = false;
-        VoiceManager.instance.CloseScence();
         pen.GetComponent<Npc>().CloseAll();
         book.GetComponent<Npc>().CloseAll();
         ink.GetComponent<Npc>().CloseAll();

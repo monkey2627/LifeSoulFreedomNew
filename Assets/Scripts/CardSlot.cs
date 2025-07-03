@@ -17,6 +17,20 @@ public class CardSlot : MonoBehaviour
     {
         
     }
+    public void MoveCardBack()
+    {
+        for(int i = 0; i < cards.Length; i++)
+        {
+            cards[i].transform.position = new Vector3(cards[i].transform.position.x, cards[i].transform.position.y, 0);
+        }
+    }
+    public void MoveCardUp()
+    {
+        for (int i = 0; i < cards.Length; i++)
+        {
+            cards[i].transform.position = new Vector3(cards[i].transform.position.x, cards[i].transform.position.y, -1);
+        }
+    }
     public void PushCard(Card card)
     {
         hasCard = true;

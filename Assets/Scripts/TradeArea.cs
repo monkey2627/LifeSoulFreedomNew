@@ -64,13 +64,15 @@ public class TradeArea : MonoBehaviour
             GetPopup.instance.gameObject.SetActive(true);
             GetPopup.instance.work = true;
         }
+            doveOptDes2.SetActive(false);
+            doveOptDes3.SetActive(false);
             doveDes.SetActive(false);
             doveOptDes1.SetActive(true);
             Bag.instance.UpdateBag();
 
         }
     /// <summary>
-    ///  消耗一点行动点，使用一张创造，获得5金钱或交易或合作（34%，33%，33%）
+    ///  消耗一点行动点，使用一张创造，获得5金钱或交易或幸运（34%，33%，33%）
     /// </summary>
     public void Dove2()
     {
@@ -95,13 +97,15 @@ public class TradeArea : MonoBehaviour
         }
         if (t == 3)
         {
-            GameManager.instance.cards[(int)Card.Cooperation].number += 1;
-            GetPopup.instance.ShowGets(10);
+            GameManager.instance.cards[(int)Card.Luck].number += 1;
+            GetPopup.instance.ShowGets(13);
             GetPopup.instance.gameObject.SetActive(true);
             GetPopup.instance.work = true;
 
         }
         doveDes.SetActive(false);
+        doveOptDes1.SetActive(false);
+        doveOptDes3.SetActive(false);
         doveOptDes2.SetActive(true);
         Bag.instance.UpdateBag();
 
@@ -114,6 +118,8 @@ public class TradeArea : MonoBehaviour
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         doveDes.SetActive(false);
+        doveOptDes1.SetActive(false);
+        doveOptDes2.SetActive(false);
         doveOptDes3.SetActive(true);
         GameManager.instance.cards[(int)Card.Money].number += 2;
         Bag.instance.UpdateBag();
@@ -187,13 +193,14 @@ public class TradeArea : MonoBehaviour
         }
             cDes.SetActive(false);
             cOptDes1.SetActive(true);
-            cOptDes1.SetActive(false);
-            cOptDes1.SetActive(false);
-            Bag.instance.UpdateBag();
+        cOptDes2.SetActive(false);
+        cOptDes3.SetActive(false);
+        cOptDes4.SetActive(false);
+        Bag.instance.UpdateBag();
             
           }
     /// <summary>
-    /// 消耗一点行动点，使用12金钱，获得造物，可能（50%）获得合作/交易/欲望（34%/33%/33%）
+    /// 消耗一点行动点，使用12金钱，获得造物，获得合作/交易/欲望（34%/33%/33%）
     /// </summary>
     public void Cheng2()
     {
@@ -201,10 +208,8 @@ public class TradeArea : MonoBehaviour
             return;
 
         GameManager.instance.cards[(int)Card.Creation].number += 1;
-        int t = Random.Range(1, 3);
-        if (t == 2)
-        {
-            t = Random.Range(1, 4);
+       
+           int t = Random.Range(1, 4);
             if (t == 1)
             {
                 GameManager.instance.cards[(int)Card.Cooperation].number += 1;
@@ -226,14 +231,12 @@ public class TradeArea : MonoBehaviour
                 GetPopup.instance.gameObject.SetActive(true);
                 GetPopup.instance.work = true;
             }
-        }
-        else
-        {
-            GetPopup.instance.ShowGets(32);
-            GetPopup.instance.gameObject.SetActive(true);
-            GetPopup.instance.work = true;
-        }
+        
+       
         cDes.SetActive(false);
+        cOptDes1.SetActive(false);
+        cOptDes4.SetActive(false);
+        cOptDes3.SetActive(false);
         cOptDes2.SetActive(true);
         Bag.instance.UpdateBag();
     }/// <summary>
@@ -260,6 +263,9 @@ public class TradeArea : MonoBehaviour
         }
         Bag.instance.UpdateBag();      
         cDes.SetActive(false);
+        cOptDes1.SetActive(false);
+        cOptDes2.SetActive(false);
+        cOptDes4.SetActive(false);
         cOptDes3.SetActive(true);
   
     }
@@ -273,8 +279,11 @@ public class TradeArea : MonoBehaviour
         GameManager.instance.cards[(int)Card.Money].number += 1;
         Bag.instance.UpdateBag();
         cDes.SetActive(false);
+        cOptDes1.SetActive(false);
+        cOptDes2.SetActive(false);
+        cOptDes3.SetActive(false);
         cOptDes4.SetActive(true);
-        GetPopup.instance.ShowGets(19);
+        GetPopup.instance.ShowGets(23);
         GetPopup.instance.gameObject.SetActive(true);
         GetPopup.instance.work = true;
 
@@ -292,7 +301,7 @@ public class TradeArea : MonoBehaviour
     }
     private void OnDisable()
     {
-        VoiceManager.instance.CloseScence();
+      
         dove.GetComponent<Npc>().CloseAll();
         cheng.GetComponent<Npc>().CloseAll();
         Bag.instance.detect = false;

@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class WorkShop : MonoBehaviour
 {
+
+    public static WorkShop instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     public GameObject shovle;
     public GameObject treeDie;
     public GameObject tree;
@@ -43,17 +51,22 @@ public class WorkShop : MonoBehaviour
             });
 
         });
-        sOptDes1.SetActive(false);
-        sOptDes2.SetActive(false);
-        sOptDes3.SetActive(false);
+        shovle.GetComponent<Npc>().CloseAll();
         if (GameManager.instance.creation2_creativity > 0)
         {
-            sOptDes4.SetActive(true);
-            sOption2.SetActive(true);
+            if (outScene)
+            {
+                sOption2.SetActive(true);
+                sDes2.SetActive(true);
+            }
+            else
+            {
+                sOptDes3.SetActive(true);
+            }
         }else if(GameManager.instance.creation_creativity)
         {
             sOption3.SetActive(true);
-            sOptDes4.SetActive(true);
+            sDes.SetActive(true);
         }
         else
         {
@@ -61,7 +74,8 @@ public class WorkShop : MonoBehaviour
             sDes.SetActive(true);
         }
     }
-    public GameObject sOptDes4;
+    public bool outScene = false;
+    public GameObject sDes2;
     public GameObject sOption2;
     public GameObject sOption3;
     public void Shovels1()
@@ -69,6 +83,8 @@ public class WorkShop : MonoBehaviour
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         sDes.SetActive(false);
+        sOptDes2.SetActive(false);
+        sOptDes3.SetActive(false);
         sOptDes1.SetActive(true);
         sOption2.SetActive(false);
         sOption.SetActive(false);
@@ -85,7 +101,8 @@ public class WorkShop : MonoBehaviour
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         sDes.SetActive(false);
-        sOptDes4.SetActive(false);
+        sOptDes1.SetActive(false);
+        sOptDes3.SetActive(false);
         sOptDes2.SetActive(true);
         GameManager.instance.cards[(int)Card.Creativity].number += 1;
         GetPopup.instance.ShowGets(9);
@@ -102,10 +119,13 @@ public class WorkShop : MonoBehaviour
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         sDes.SetActive(false);
+        sOptDes1.SetActive(false);
+        sOptDes2.SetActive(false);
         sOptDes3.SetActive(true);
         sOption.SetActive(false);
         sOption3.SetActive(false);
-        sOption2.SetActive(true);
+        outScene = false;
+       // sOption2.SetActive(true);
         GameManager.instance.cards[(int)Card.Cooperation].number += 1;
         GetPopup.instance.ShowGets(10);
         GetPopup.instance.gameObject.SetActive(true);
@@ -215,6 +235,7 @@ public class WorkShop : MonoBehaviour
             return;
         GameManager.instance.cards[(int)Card.Life].number += 1;
         GameManager.instance.getInf = true;
+        inf.SetActive(false);
         treeDes.SetActive(false);
         treeOptDes1.SetActive(true);
         tree.SetActive(true);
@@ -240,9 +261,12 @@ public class WorkShop : MonoBehaviour
     {
         VoiceManager.instance.CloseScence();
         gameObject.SetActive(false);
-        VoiceManager.instance.CloseScence();
         Bag.instance.detect = false;
         treeDie.GetComponent<Npc>().CloseAll();
         shovle.GetComponent<Npc>().CloseAll();
+        if (GameManager.instance.creation2_creativity > 0)
+        {
+            outScene = true;
+        }
     }
 }

@@ -49,6 +49,9 @@ public class Restaurant : MonoBehaviour
     public void Lobster1()
     {
         dDes.SetActive(false);
+        dOptDes4.SetActive(false);
+        dOptDes2.SetActive(false);
+        dOptDes3.SetActive(false);
         dOptDes1.SetActive(true);
         GameManager.instance.AddLife(2);
         Bag.instance.UpdateBag();
@@ -57,14 +60,17 @@ public class Restaurant : MonoBehaviour
         GetPopup.instance.work = false;
     }
     /// <summary>
-    /// 不消耗行动点，使用一张觉悟和1金钱，获得3饱食，可能（25%）获得欲望
+    /// 不消耗行动点，使用一张觉悟和1金钱，获得3饱食，可能（50%）获得欲望
     /// </summary>
     public void Lobster2()
     {
         dDes.SetActive(false);
+        dOptDes1.SetActive(false);
+        dOptDes3.SetActive(false);
+        dOptDes4.SetActive(false);
         dOptDes2.SetActive(true);
         GameManager.instance.AddLife(3);
-            int t = Random.Range(1, 5);
+            int t = Random.Range(1, 3);
             if (t == 2)
             {
                 GameManager.instance.cards[(int)Card.Desire].number += 1;
@@ -86,6 +92,9 @@ public class Restaurant : MonoBehaviour
     public void Lobster3()
     {
         dDes.SetActive(false);
+        dOptDes1.SetActive(false);
+        dOptDes2.SetActive(false);
+        dOptDes4.SetActive(false);
         dOptDes3.SetActive(true);
         GameManager.instance.AddLife(5);
         GetPopup.instance.ShowGets(29);
@@ -95,28 +104,23 @@ public class Restaurant : MonoBehaviour
         
     }
     /// <summary>
-    /// 不消耗行动点，使用一张欲望和一张觉悟获得5饱食，可能（50%）获得幸运
+    /// 不消耗行动点，使用一张欲望和一张觉悟获得5饱食，获得幸运
     /// </summary>
     public void Lobster4()
     {
 
         dDes.SetActive(false);
+        dOptDes1.SetActive(false);
+        dOptDes2.SetActive(false);
+        dOptDes3.SetActive(false);
         dOptDes4.SetActive(true);
         GameManager.instance.AddLife(3);
-            int t = Random.Range(1, 3);
-            if (t == 2)
-            {
+           
                 GameManager.instance.cards[(int)Card.Luck].number += 1;
             GetPopup.instance.ShowGets(30);
             GetPopup.instance.gameObject.SetActive(true);
             GetPopup.instance.work = false;
-        }
-        else
-        {
-            GetPopup.instance.ShowGets(29);
-            GetPopup.instance.gameObject.SetActive(true);
-            GetPopup.instance.work = false;
-        }
+       
         Bag.instance.UpdateBag();
 
     }
@@ -124,6 +128,7 @@ public class Restaurant : MonoBehaviour
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
+        VoiceManager.instance.PlayMain();
         gameObject.SetActive(false);
         MainMap.instance.gameObject.SetActive(true);
         Bag.instance.detect = false;

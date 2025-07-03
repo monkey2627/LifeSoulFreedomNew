@@ -45,26 +45,17 @@ public class GetPopup : MonoBehaviour
                 Theater.instance.WufaFengkuang.SetActive(true);
 
             }
+            else
+            {
+                GameManager.instance.SubWorkPoint();
+            }
         }
         //Ëº»ÙÅÆ
         if(getNow ==3)
         {
-            if (GameManager.instance.cards[(int)Card.Crazy].number % 3 == 0 && GameManager.instance.cards[(int)Card.Crazy].number > 0
-            && GameManager.instance.crazy[GameManager.instance.cards[(int)Card.Crazy].number %3] == 0)
-            {
-
-                int card = Theater.instance.find();
-                GameManager.instance.cards[card].number -= 1;
-                GameManager.instance.cardDestory++;
-                string text = "Ëº»ÙÒ»ÕÅ" + Theater.instance.deses[card] + "¡£";
-                Theater.instance.maskTextp.SetActive(true);
-                Theater.instance.maskText.text = text;
-                GameManager.instance.crazy[GameManager.instance.cards[(int)Card.Crazy].number % 3] = 1;
-                Bag.instance.UpdateBag();
-            }
-            else if (GameManager.instance.cards[(int)Card.Crazy].number % 3 == 0 
+            if (GameManager.instance.cards[(int)Card.Crazy].number % 3 == 0 
                 && GameManager.instance.cards[(int)Card.Crazy].number > 0
-               && GameManager.instance.crazy[GameManager.instance.cards[(int)Card.Crazy].number % 3] == 0
+               && GameManager.instance.crazy[GameManager.instance.cards[(int)Card.Crazy].number / 3] == 0
                && GameManager.instance.cards[0].number == 0
                && GameManager.instance.cards[1].number == 0
                && GameManager.instance.cards[2].number == 0
@@ -74,8 +65,26 @@ public class GetPopup : MonoBehaviour
                && GameManager.instance.cards[6].number == 0
                && GameManager.instance.cards[7].number == 0)
             {
-                GameManager.instance.NextDay();
+                GameManager.instance.NextDayMust();
 
+            }else if (GameManager.instance.cards[(int)Card.Crazy].number % 3 == 0 
+                && GameManager.instance.cards[(int)Card.Crazy].number > 0
+                && GameManager.instance.crazy[GameManager.instance.cards[(int)Card.Crazy].number / 3] == 0)
+            {
+
+                int card = Theater.instance.find();
+                GameManager.instance.cards[card].number -= 1;
+                GameManager.instance.cardDestory++;
+                string text = "Ëº»ÙÒ»ÕÅ" + Theater.instance.deses[card] + "¡£";
+                Theater.instance.maskTextp.SetActive(true);
+                Theater.instance.maskText.text = text;
+                GameManager.instance.crazy[GameManager.instance.cards[(int)Card.Crazy].number / 3] = 1;
+                Bag.instance.UpdateBag();
+            }
+            else
+            {
+                GameManager.instance.SubWorkPoint();
+                Bag.instance.UpdateBag();
             }
         }
     }

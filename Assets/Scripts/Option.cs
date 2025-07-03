@@ -49,11 +49,11 @@ public class Option : MonoBehaviour
                 {
                     if (GameManager.instance.cards[(int)cardSlots[i].card].number >0)
                     {
-                        t++;
+                        t += GameManager.instance.cards[(int)cardSlots[i].card].number;
                     }
                 }
             }
-            if(t == anyNumber)
+            if(t >= anyNumber)
             {
                 ok.SetActive(true);
                 notOk.SetActive(false);
@@ -62,8 +62,6 @@ public class Option : MonoBehaviour
             ok.SetActive(false);
             notOk.SetActive(true);
             return false;
-
-
         }
         int[] a=new int[19];
         for(int i = 0; i < 19; i++)
@@ -76,6 +74,8 @@ public class Option : MonoBehaviour
         }
         for (int i = 0; i < cardSlots.Count; i++)
         {
+            Debug.Log(i + "  " + cardSlots[i].hasCard + GameManager.instance.cards[(int)cardSlots[i].card].number + " " + cardsNumber[i]
+                   + " " + cardsNumber[i]);
             if (cardSlots[i].hasCard)
             {
                 if (GameManager.instance.cards[(int)cardSlots[i].card].number >= cardsNumber[i]
@@ -86,6 +86,7 @@ public class Option : MonoBehaviour
             }
            
         }
+
         for (int i = 0; i < 19; i++)
         {
             
@@ -124,14 +125,24 @@ public class Option : MonoBehaviour
     {
         if (anyNormal)
         {
-            for (int i = 0; i < cardSlots.Count; i++)
+            if(cardSlots[0].hasCard && cardSlots[1].hasCard)
             {
-                if (cardSlots[i].hasCard)
-                {
-                    GameManager.instance.cards[(int)cardSlots[i].card].number -= 1;
-                }
+                GameManager.instance.cards[(int)cardSlots[0].card].number -= 1;
+                GameManager.instance.cards[(int)cardSlots[1].card].number -= 1;
+            }
+            else if (cardSlots[0].hasCard && !cardSlots[1].hasCard)
+            {
+                GameManager.instance.cards[(int)cardSlots[0].card].number -= 2;
+            }
+            else if (!cardSlots[0].hasCard && cardSlots[1].hasCard)
+            {
+                GameManager.instance.cards[(int)cardSlots[1].card].number -= 2;
             }
             Bag.instance.UpdateBag();
+            for (int i = 0; i < cardSlots.Count; i++)
+            {
+                cardSlots[i].RemoveCard();
+            }
             return;
         }
         for (int i = 0; i < cards.Length; i++)

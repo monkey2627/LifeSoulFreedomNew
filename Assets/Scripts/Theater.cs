@@ -85,7 +85,9 @@ public class Theater : MonoBehaviour
             return;
         GameManager.instance.chooseMask = true;
         GameManager.instance.cards[(int)Card.Crazy].number += 1;
+        Bag.instance.UpdateBag();
         maskDes.SetActive(false);
+        maskOptionDes2.SetActive(false);
         maskOptionDes1.SetActive(true);
         GetPopup.instance.ShowGets(3);
         GetPopup.instance.gameObject.SetActive(true);
@@ -100,6 +102,7 @@ public class Theater : MonoBehaviour
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         maskDes.SetActive(false);
+        maskOptionDes1.SetActive(false);
         maskOptionDes2.SetActive(true);
         GameManager.instance.SubWorkPoint();
     }
@@ -145,11 +148,13 @@ public class Theater : MonoBehaviour
             return;
         tDes.SetActive(false);
         tDes1.SetActive(true);
+        tDes2.SetActive(false);
         GameManager.instance.cards[(int)Card.Awakeness].number += 1;
         GameManager.instance.awakeNumber++;
         GetPopup.instance.ShowGets(15);
         GetPopup.instance.gameObject.SetActive(true);
         GetPopup.instance.work = true;
+        Bag.instance.UpdateBag();
     }
     /// <summary>
     /// 用6份疯狂换取一张欲望/幸运（70%，30%）
@@ -159,6 +164,7 @@ public class Theater : MonoBehaviour
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         tDes.SetActive(false);
+        tDes1.SetActive(false);
         tDes2.SetActive(true);
         int t = Random.Range(1, 11);
             if (t <=7)
@@ -175,6 +181,7 @@ public class Theater : MonoBehaviour
             GetPopup.instance.gameObject.SetActive(true);
             GetPopup.instance.work = true;
         }
+
         Bag.instance.UpdateBag();
     }
     //挑衅的鼓
@@ -227,6 +234,7 @@ public class Theater : MonoBehaviour
         Bag.instance.UpdateBag();
         guDes.SetActive(false);
         guOptDes1.SetActive(true);
+        guOption.SetActive(false);
         lunPan.GetComponent<SpriteRenderer>().DOFade(1, 1);
         lunPan.transform.DOScale(new Vector3(0.41f, 0.41f, 0.41f), 1);
         lunPan.transform.DORotate(new Vector3(0, 0, 360), 1).OnComplete(()=> {
@@ -314,29 +322,43 @@ public class Theater : MonoBehaviour
                     GameManager.instance.cards[(int)Card.Fight].number += 1;
                     GameManager.instance.cards[(int)Card.Money].number += 3;
                     Bag.instance.UpdateBag();
-                    doublePanel.SetActive(true);
+                    delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                    {
+                        doublePanel.SetActive(true);
+                    });
                 }
                 else
                 {
                     GameManager.instance.cards[(int)Card.Money].number += 3;
                     Bag.instance.UpdateBag();
-                    winPanel.SetActive(true);
+                    delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                    {
+                        winPanel.SetActive(true);
+                    });
                 }
         }else if (t == 2)
         {
-            losePanel.SetActive(true);
+                delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                {
+                    losePanel.SetActive(true);
+                });
                 GameManager.instance.cards[(int)Card.Crazy].number += 3;
                 Bag.instance.UpdateBag();
             }
             else
             {
-                samePanel.SetActive(true);
+                delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                {
+                    samePanel.SetActive(true);
+                });
+                Bag.instance.UpdateBag();
             }
         
          });
         });
         
     }
+    public GameObject delay;
     public GameObject lunpanGame;
     public void RouletteGetjiandao()
     {
@@ -364,24 +386,39 @@ public class Theater : MonoBehaviour
                         GameManager.instance.cards[(int)Card.Fight].number += 1;
                         GameManager.instance.cards[(int)Card.Money].number += 3;
                         Bag.instance.UpdateBag();
-                        doublePanel.SetActive(true);
+                        delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                        {
+                            doublePanel.SetActive(true);
+
+                        });
+                        
                     }
                     else
                     {
                         GameManager.instance.cards[(int)Card.Money].number += 3;
                         Bag.instance.UpdateBag();
-                        winPanel.SetActive(true);
+                        delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                        {
+                            winPanel.SetActive(true);
+                        });
                     }
                 }
                 else if (t == 0)
                 {
-                    losePanel.SetActive(true);
+                    delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                    {
+                        losePanel.SetActive(true);
+                    });
                     GameManager.instance.cards[(int)Card.Crazy].number += 3;
                     Bag.instance.UpdateBag();
                 }
                 else
                 {
-                    samePanel.SetActive(true);
+                    delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                    {
+                        samePanel.SetActive(true);
+                    });
+                    Bag.instance.UpdateBag();
                 }
             
             
@@ -415,24 +452,37 @@ public class Theater : MonoBehaviour
                     GameManager.instance.cards[(int)Card.Fight].number += 1;
                     GameManager.instance.cards[(int)Card.Money].number += 3;
                     Bag.instance.UpdateBag();
-                    doublePanel.SetActive(true);
+                        delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                        {
+                            doublePanel.SetActive(true);
+                        });
                 }
                 else
                 {
                     GameManager.instance.cards[(int)Card.Money].number += 3;
                     Bag.instance.UpdateBag();
-                    winPanel.SetActive(true);
+                        delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                        {
+                            winPanel.SetActive(true);
+                        });
                 }
             }
             else if (t == 1)
             {
-                losePanel.SetActive(true);
+                    delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                    {
+                        losePanel.SetActive(true);
+                    });
                 GameManager.instance.cards[(int)Card.Crazy].number += 3;
                 Bag.instance.UpdateBag();
             }
             else
             {
-                samePanel.SetActive(true);
+                    delay.transform.DOMove(new Vector3(-1, -1, -1), 1.5f).OnComplete(() =>
+                    {
+                        samePanel.SetActive(true);
+                    });
+                    Bag.instance.UpdateBag();
             }});
         });
 
@@ -449,9 +499,9 @@ public class Theater : MonoBehaviour
         getShitou = false;
         getJiandap = false;
         getBu = false;
+        sjb[3].SetActive(true);
         sjb[4].SetActive(true);
         sjb[5].SetActive(true);
-        sjb[6].SetActive(true);
         winPanel.SetActive(false);
         losePanel.SetActive(false);
         samePanel.SetActive(false);
@@ -500,17 +550,19 @@ public class Theater : MonoBehaviour
         penDes.SetActive(true);
     }
     /// <summary>
-    /// 消耗一点行动点，使用一张觉悟获得信息和1金钱，可能（10%）获得争斗
+    /// 消耗一点行动点，使用一张觉悟获得信息和1金钱，可能（25%）获得争斗
     /// </summary>
     public void Pen1()
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
+        Debug.Log(GameManager.instance.cards[(int)Card.Money].number);
         GameManager.instance.cards[(int)Card.Information].number += 1;
         GameManager.instance.cards[(int)Card.Money].number += 1;
         penDes.SetActive(false);
+        penDesOpt2.SetActive(false);
         penDesOpt1.SetActive(true);
-        int t = Random.Range(1, 11);
+        int t = Random.Range(1, 5);
         if (t == 2)
         {
             GameManager.instance.cards[(int)Card.Fight].number += 1;
@@ -529,13 +581,14 @@ public class Theater : MonoBehaviour
         Bag.instance.UpdateBag();
     }
     /// <summary>
-    /// 消耗一点行动点，使用2张任意普通牌获得一张争斗或一张合作
+    /// 消耗一点行动点，使用2张任意普通牌获得一张争斗或一张欲望
     /// </summary>
     public void Pen2()
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         penDes.SetActive(false);
+        penDesOpt1.SetActive(false);
         penDesOpt2.SetActive(true);
         int t = Random.Range(1, 3);
         if (t == 2)
@@ -547,8 +600,8 @@ public class Theater : MonoBehaviour
         }
         else
         {
-            GameManager.instance.cards[(int)Card.Cooperation].number += 1;
-            GetPopup.instance.ShowGets(10);
+            GameManager.instance.cards[(int)Card.Desire].number += 1;
+            GetPopup.instance.ShowGets(14);
             GetPopup.instance.gameObject.SetActive(true);
             GetPopup.instance.work = true;
         }
@@ -588,7 +641,7 @@ public class Theater : MonoBehaviour
             });
 
         });
-        bwDes.SetActive(true);
+        fDes.SetActive(true);
         int t = Random.Range(1, 6);
         if (t == 2)
         {
@@ -642,9 +695,10 @@ public class Theater : MonoBehaviour
         bwDes.SetActive(true);
         int t = Random.Range(1, 3);
         if (t == 2)
-        { GetPopup.instance.ShowGets(17);
-        GetPopup.instance.gameObject.SetActive(true);
-        GetPopup.instance.work = true;
+        { 
+            GetPopup.instance.ShowGets(17);
+            GetPopup.instance.gameObject.SetActive(true);
+            GetPopup.instance.work = true;
             GameManager.instance.cards[(int)Card.Desperate].number = 3;
         }
         else
@@ -678,7 +732,6 @@ public class Theater : MonoBehaviour
     {
         gameObject.SetActive(false);
         mainMap.SetActive(true);
-        VoiceManager.instance.CloseScence();
         pen.GetComponent<Npc>().CloseAll();
         mask.GetComponent<Npc>().CloseAll();
         drum.GetComponent<Npc>().CloseAll();
