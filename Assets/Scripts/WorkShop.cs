@@ -52,9 +52,9 @@ public class WorkShop : MonoBehaviour
 
         });
         shovle.GetComponent<Npc>().CloseAll();
-        if (GameManager.instance.creation2_creativity > 0)
+        if (DataManager.instance.Creation2_creativity > 0)
         {
-            if (outScene)
+            if (DataManager.instance.outScene)
             {
                 sOption2.SetActive(true);
                 sDes2.SetActive(true);
@@ -63,7 +63,7 @@ public class WorkShop : MonoBehaviour
             {
                 sOptDes3.SetActive(true);
             }
-        }else if(GameManager.instance.creation_creativity)
+        }else if(DataManager.instance.Creation_creativity)
         {
             sOption3.SetActive(true);
             sDes.SetActive(true);
@@ -74,7 +74,6 @@ public class WorkShop : MonoBehaviour
             sDes.SetActive(true);
         }
     }
-    public bool outScene = false;
     public GameObject sDes2;
     public GameObject sOption2;
     public GameObject sOption3;
@@ -89,7 +88,8 @@ public class WorkShop : MonoBehaviour
         sOption2.SetActive(false);
         sOption.SetActive(false);
         sOption3.SetActive(true);
-        GameManager.instance.creation_creativity = true;
+        
+        DataManager.instance.Creation_creativity = true;
         GameManager.instance.SubWorkPoint();
         Bag.instance.UpdateBag();
     }
@@ -124,14 +124,13 @@ public class WorkShop : MonoBehaviour
         sOptDes3.SetActive(true);
         sOption.SetActive(false);
         sOption3.SetActive(false);
-        outScene = false;
-       // sOption2.SetActive(true);
+        DataManager.instance.outScene = false;
         GameManager.instance.cards[(int)Card.Cooperation].number += 1;
         GetPopup.instance.ShowGets(10);
         GetPopup.instance.gameObject.SetActive(true);
         GetPopup.instance.work = true;
         Bag.instance.UpdateBag();
-        GameManager.instance.creation2_creativity = 5;
+        DataManager.instance.Creation2_creativity = 5;
     }
     //¿ÝÎ®µÄÊÀ½çÊ÷
     public GameObject treeDes;
@@ -234,7 +233,7 @@ public class WorkShop : MonoBehaviour
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         GameManager.instance.cards[(int)Card.Life].number += 1;
-        GameManager.instance.getInf = true;
+        DataManager.instance.GetInf = true;
         inf.SetActive(false);
         treeDes.SetActive(false);
         treeOptDes1.SetActive(true);
@@ -264,9 +263,9 @@ public class WorkShop : MonoBehaviour
         Bag.instance.detect = false;
         treeDie.GetComponent<Npc>().CloseAll();
         shovle.GetComponent<Npc>().CloseAll();
-        if (GameManager.instance.creation2_creativity > 0)
+        if (DataManager.instance.Creation2_creativity > 0)
         {
-            outScene = true;
+           DataManager.instance.outScene = true;
         }
     }
 }

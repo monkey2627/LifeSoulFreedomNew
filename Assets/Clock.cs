@@ -12,35 +12,15 @@ public class Clock : MonoBehaviour
     {
         if (type == 0)
         {
+        //    DataManager.instance.cardAddInHello[(int)CardAddInHello.AwarenessHello] += 1;
             GameManager.instance.cards[(int)Card.Awareness].number += 1;
         }
         else
         { 
-            GameManager.instance.cards[(int)Card.Awareness].number += 2; 
+            GameManager.instance.cards[(int)Card.Awareness].number += 2;
+           // DataManager.instance.cardAddInHello[(int)CardAddInHello.AwarenessHello] += 2;
         }
         Bag.instance.UpdateBag();
     }
-    /// <summary>
-    /// 获得一张觉悟
-    /// </summary>
-    public void Option1()
-    {
-        GameManager.instance.cards[(int)Card.Awareness].number++;
-        gameObject.SetActive(false);
-        GameManager.instance.NextHello();
-    }
     public GameObject guide;
-
-    /// <summary>
-    /// 我已做好觉悟，这次一定要追上你。
-    /// </summary>
-    public void Option2()
-    {
-        if (GameManager.instance.cards[(int)Card.Awareness].number >= 3)
-        {
-            guide.SetActive(true);
-            GameManager.instance.cards[(int)Card.Awareness].number -= 3;
-            gameObject.SetActive(false);
-        }
-    }
 }

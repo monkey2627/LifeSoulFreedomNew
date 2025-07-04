@@ -120,6 +120,7 @@ public class Bridge : MonoBehaviour
         wu.GetComponent<SpriteRenderer>().DOFade(0, 1.5f).OnComplete(()=> {
             mirrors.SetActive(true);
             wu.SetActive(false);
+            DataManager.instance.BridgeCharacter = 1;
             GameManager.instance.SubWorkPoint();
           
         });
@@ -157,14 +158,14 @@ public class Bridge : MonoBehaviour
         mDes.SetActive(true);
     }
     public void Mirrors()
-    { mOption.SetActive(false);mDes.SetActive(false);mOptDes1.SetActive(true); 
+    {   mOption.SetActive(false);mDes.SetActive(false);mOptDes1.SetActive(true); 
         GameManager.instance.cards[(int)Card.Freedom].number += 1;
         Bag.instance.UpdateBag();
         mirrors.GetComponent<SpriteRenderer>().DOFade(0, 1.5f).OnComplete(() => {
 
             door.SetActive(true);
             mirrors.SetActive(false);
-            
+            DataManager.instance.BridgeCharacter = 2;
             GetPopup.instance.ShowGets(2);
             GetPopup.instance.gameObject.SetActive(true);
             GetPopup.instance.work = true;
@@ -224,7 +225,7 @@ public class Bridge : MonoBehaviour
             for (float t = 0; t < fadeDuration; t += Time.deltaTime)
             {
                 float fadeProgress = t / fadeDuration;
-                Debug.Log(fadeProgress + " " + fadeDuration + " " + t);
+               // Debug.Log(fadeProgress + " " + fadeDuration + " " + t);
                 currentSource.volume = 1.0f - fadeProgress; // 当前音频源音量逐渐减小
                 nextSource.volume = fadeProgress; // 下一个音频源音量逐渐增大
                 yield return null;

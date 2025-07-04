@@ -105,7 +105,8 @@ public class Guide : MonoBehaviour
     public GameObject Luodideng;
 
     /// <summary>
-    /// 教程结束，开始第一天的游戏
+    /// 教程结束
+    /// 开始第一天的游戏，运行Init()
     /// </summary>
     public void ClickGuide12()
     {
@@ -115,9 +116,11 @@ public class Guide : MonoBehaviour
         VoiceManager.instance.PlayMain();
         Luodideng.SetActive(false);
         Bag.instance.gameObject.SetActive(true);
-      
         zhongbiao.SetActive(false);
         GameManager.instance.UII.SetActive(true);
+        DataManager.instance.NeedGuide = false;
+        DataManager.instance.NeedHello = true;
+        DataManager.instance.SaveGame();
         GameManager.instance.SolveDayHello();
     }
     private IEnumerator PlayAudioWithCrossFade()
@@ -131,7 +134,7 @@ public class Guide : MonoBehaviour
             for (float t = 0; t < fadeDuration; t += Time.deltaTime)
             {
                 float fadeProgress = t / fadeDuration;
-                Debug.Log(fadeProgress + " " + fadeDuration + " " + t);
+               // Debug.Log(fadeProgress + " " + fadeDuration + " " + t);
                 currentSource.volume = 1.0f - fadeProgress; // 当前音频源音量逐渐减小
                 nextSource.volume = fadeProgress; // 下一个音频源音量逐渐增大
                 yield return null;

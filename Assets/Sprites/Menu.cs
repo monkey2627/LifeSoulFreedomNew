@@ -16,8 +16,6 @@ public class Menu : MonoBehaviour
     private AudioSource audioSource2;
     private AudioSource currentSource;
     private AudioSource nextSource;
-
-    private bool isPlaying = false;
     private void OnEnable()
     {
         if(GameManager.instance)
@@ -68,7 +66,16 @@ public class Menu : MonoBehaviour
     public void ExitEnd()
     {
         end.transform.DOScale(new Vector3(1f, 1f, 0), 0.2f);
-    } 
+    }
+    public GameObject last;
+    public void EnterLast()
+    {
+        last.transform.DOScale(new Vector3(1.2f, 1.2f, 0), 0.2f);
+    }
+    public void ExitLast()
+    {
+        last.transform.DOScale(new Vector3(1f, 1f, 0), 0.2f);
+    }
     private IEnumerator PlayAudioWithCrossFade()
     {
         while (true)
@@ -80,7 +87,7 @@ public class Menu : MonoBehaviour
             for (float t = 0; t < fadeDuration; t += Time.deltaTime)
             {
                 float fadeProgress = t / fadeDuration;
-                Debug.Log(fadeProgress+" "+fadeDuration +" "+t);
+               // Debug.Log(fadeProgress+" "+fadeDuration +" "+t);
                 currentSource.volume = 1.0f - fadeProgress; // 当前音频源音量逐渐减小
                 nextSource.volume = fadeProgress; // 下一个音频源音量逐渐增大
                 yield return null;

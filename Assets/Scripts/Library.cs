@@ -290,15 +290,16 @@ public class Library : MonoBehaviour
         if (GameManager.instance.TanChuangZhuangTai)
             return;
        
-            GameManager.instance.cards[(int)Card.Information].number += 1;
-            penDes.SetActive(false);
-            penOptDes.SetActive(true);
-            pen.transform.DOLocalMove(new Vector3(-3.08f,7.15f,0), 2);
-            pen2.SetActive(true);
+        GameManager.instance.cards[(int)Card.Information].number += 1;
+        penDes.SetActive(false);
+        penOptDes.SetActive(true);
+        pen.transform.DOLocalMove(new Vector3(-3.08f,7.15f,0), 2);
+        pen2.SetActive(true);
         penOption.SetActive(false);
-            GetPopup.instance.ShowGets(8);
-            GetPopup.instance.gameObject.SetActive(true);
-            GetPopup.instance.work = true;
+        DataManager.instance.ChatedWithPen = true;
+        GetPopup.instance.ShowGets(8);
+        GetPopup.instance.gameObject.SetActive(true);
+        GetPopup.instance.work = true;
         
         Bag.instance.UpdateBag();
     }

@@ -27,6 +27,10 @@ public class GetPopup : MonoBehaviour
     public GameObject story;
     private void OnDisable()
     {
+        if (getNow == 31)
+        {
+            DataManager.instance.SaveGame();
+        }
         if (work && getNow != 0 && getNow !=15 && getNow != 3)
         {
             GameManager.instance.SubWorkPoint();
@@ -39,14 +43,14 @@ public class GetPopup : MonoBehaviour
         //清明
         if(getNow == 15)
         {
-            if (GameManager.instance.awakeNumber % 3 == 0 && GameManager.instance.awakeNumber > 0)
+            if (GameManager.instance.cards[(int)Card.Awakeness].number % 3 == 0 && GameManager.instance.cards[(int)Card.Awakeness].number > 0)
             {
-                GameManager.instance.CrazyFree = 5;
+                DataManager.instance.CrazyFree = 5;
                 Theater.instance.WufaFengkuang.SetActive(true);
-
             }
             else
             {
+               
                 GameManager.instance.SubWorkPoint();
             }
         }
@@ -74,7 +78,7 @@ public class GetPopup : MonoBehaviour
 
                 int card = Theater.instance.find();
                 GameManager.instance.cards[card].number -= 1;
-                GameManager.instance.cardDestory++;
+                DataManager.instance.CardDestroy++;
                 string text = "撕毁一张" + Theater.instance.deses[card] + "。";
                 Theater.instance.maskTextp.SetActive(true);
                 Theater.instance.maskText.text = text;

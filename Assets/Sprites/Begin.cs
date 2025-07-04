@@ -10,23 +10,22 @@ public class Begin : MonoBehaviour
     public GameObject[] guides;
     private void OnEnable()
     {
-        
+        DataManager.instance.NeedGuide = true;
+        DataManager.instance.NeedHello = true;
         VoiceManager.instance.main.clip = null;
-     
     }
+    /// <summary>
+    /// 开始落地灯引导
+    /// </summary>
     public void CloseBegin()
     {
-        //进行游戏初始化
+        GameManager.instance.DisableAll();
+        MainMap.SetActive(true);
+        Luodideng.SetActive(true);
+        guides[0].SetActive(true);  
+        Invoke("ShowGuide2",3);
         GameManager.instance.Init();
-        
-       
-            MainMap.SetActive(true);
-            Luodideng.SetActive(true);
-            guides[0].SetActive(true);
-           
-            Invoke("ShowGuide2",3); gameObject.SetActive(false);
-       
-        
+        gameObject.SetActive(false);
     }
     public void ShowGuide2()
     {

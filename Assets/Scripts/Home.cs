@@ -89,8 +89,7 @@ public class Home : MonoBehaviour
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
-        GameManager.instance.doubleAwareness = true;
-        GameManager.instance.doubleAwarenessDay = 5;
+        DataManager.instance.DoubleAwarenessDay = 5;
         ClockDes.SetActive(false);
         clockOpt1.SetActive(true);
         clockOpt.SetActive(false);
@@ -109,7 +108,6 @@ public class Home : MonoBehaviour
     public GameObject canvasNotEmpty;
     public GameObject canvasNotEmptyDes;
     public GameObject canvasNotEmptyOpt;
-    public bool painted = false;
 
     public void ClickCanvas()
     {
@@ -135,10 +133,10 @@ public class Home : MonoBehaviour
             });
 
         });
-       lightt.GetComponent<Npc>().CloseAll();
+        lightt.GetComponent<Npc>().CloseAll();
         canvasOptDes.SetActive(false);
         canvasOptDes2.SetActive(false);
-        if (!painted)
+        if (!DataManager.instance.GetMoney)
         { 
             canvasDes.SetActive(true); 
             canvasOpt.SetActive(true);
@@ -173,8 +171,7 @@ public class Home : MonoBehaviour
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         GameManager.instance.cards[(int)Card.Soul].number += 1;
-        GameManager.instance.getMoney = true;
-        painted = true;
+        DataManager.instance.GetMoney = true;
         canvasDes.SetActive(false);
         canvasOptDes2.SetActive(true);
         GetPopup.instance.ShowGets(16);

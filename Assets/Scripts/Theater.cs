@@ -57,7 +57,7 @@ public class Theater : MonoBehaviour
         });
         maskOptionDes1.SetActive(false);
         maskOptionDes2.SetActive(false);
-        if(GameManager.instance.CrazyFree > 0)
+        if(DataManager.instance.CrazyFree > 0)
         {
             maskOptionB.SetActive(true);
             maskOptionA.SetActive(false);
@@ -83,7 +83,7 @@ public class Theater : MonoBehaviour
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
-        GameManager.instance.chooseMask = true;
+        DataManager.instance.ChooseMask = true;
         GameManager.instance.cards[(int)Card.Crazy].number += 1;
         Bag.instance.UpdateBag();
         maskDes.SetActive(false);
@@ -150,7 +150,6 @@ public class Theater : MonoBehaviour
         tDes1.SetActive(true);
         tDes2.SetActive(false);
         GameManager.instance.cards[(int)Card.Awakeness].number += 1;
-        GameManager.instance.awakeNumber++;
         GetPopup.instance.ShowGets(15);
         GetPopup.instance.gameObject.SetActive(true);
         GetPopup.instance.work = true;
@@ -189,13 +188,12 @@ public class Theater : MonoBehaviour
     public GameObject guDes;
     public GameObject guOptDes1;
     public GameObject guOptDes2;
-    public bool isLunpan = false;
     public void ClickGu()
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         VoiceManager.instance.ClickTiezhi();
-        if (isLunpan) return;
+        if (DataManager.instance.IsLunpan) return;
         drum.transform.DORotate(new Vector3(0, 0, 10), 0.1f).OnComplete(() =>
         {
 
@@ -228,9 +226,9 @@ public class Theater : MonoBehaviour
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
-        if (isLunpan)
+        if (DataManager.instance.IsLunpan)
             return;
-        isLunpan = true;
+        DataManager.instance.IsLunpan = true;
         Bag.instance.UpdateBag();
         guDes.SetActive(false);
         guOptDes1.SetActive(true);
@@ -238,8 +236,9 @@ public class Theater : MonoBehaviour
         lunPan.GetComponent<SpriteRenderer>().DOFade(1, 1);
         lunPan.transform.DOScale(new Vector3(0.41f, 0.41f, 0.41f), 1);
         lunPan.transform.DORotate(new Vector3(0, 0, 360), 1).OnComplete(()=> {
+           
             GameManager.instance.SubWorkPoint();
-            win = 0;
+            DataManager.instance.Win = 0;
 
         });
     }
@@ -251,8 +250,6 @@ public class Theater : MonoBehaviour
         guOptDes2.SetActive(true);
     }
     //激情的轮盘
-    public int win = 0;
-
     public GameObject GameView;
     public GameObject lunpanOption;
     public GameObject lunpanDes;
@@ -291,7 +288,6 @@ public class Theater : MonoBehaviour
     /// </summary>
     public void Roulette()
     {
-        startGame = true;
         GameView.SetActive(true);
     }
     bool getShitou = false;
@@ -316,8 +312,8 @@ public class Theater : MonoBehaviour
         sjb[t].transform.DOScale(new Vector3(0.5f, 0.5f, 0.5f), 1).OnComplete(()=> {
         if (t == 1)
         {
-                win++;
-                if (win == 2)
+                DataManager.instance.Win++;
+                if (DataManager.instance.Win == 2)
                 {
                     GameManager.instance.cards[(int)Card.Fight].number += 1;
                     GameManager.instance.cards[(int)Card.Money].number += 3;
@@ -380,8 +376,8 @@ public class Theater : MonoBehaviour
             
                 if (t == 2)
                 {
-                    win++;
-                    if (win == 2)
+                    DataManager.instance.Win++;
+                    if (DataManager.instance.Win == 2)
                     {
                         GameManager.instance.cards[(int)Card.Fight].number += 1;
                         GameManager.instance.cards[(int)Card.Money].number += 3;
@@ -446,8 +442,8 @@ public class Theater : MonoBehaviour
             sjb[t].transform.DOScale(new Vector3(0.5f, 0.5f, 0.5f), 1).OnComplete(()=> { 
             if (t == 0)
             {
-                win++;
-                if (win == 2)
+                    DataManager.instance.Win++;
+                if (DataManager.instance.Win == 2)
                 {
                     GameManager.instance.cards[(int)Card.Fight].number += 1;
                     GameManager.instance.cards[(int)Card.Money].number += 3;
@@ -512,7 +508,6 @@ public class Theater : MonoBehaviour
     public GameObject doublePanel;
     public GameObject samePanel;
     public GameObject losePanel;
-    bool startGame = false;
     public GameObject[] sjb;
     //充满决心的圆珠笔（常驻)
     public GameObject penOption;
@@ -613,14 +608,13 @@ public class Theater : MonoBehaviour
     /// </summary>
     /// 
     public GameObject fDes;
-    public bool flowerFirstClick = true;
     public void Flower()
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         VoiceManager.instance.ClickTiezhi();
-        if (!flowerFirstClick) return;
-        flowerFirstClick = false;
+        if (!DataManager.instance.FlowerFirstClick) return;
+        DataManager.instance.FlowerFirstClick = false;
         pen.GetComponent<Npc>().CloseAll();
         mask.GetComponent<Npc>().CloseAll();
         drum.GetComponent<Npc>().CloseAll();
@@ -664,14 +658,13 @@ public class Theater : MonoBehaviour
     /// 不消耗行动点，获得一张争斗/绝望（接下来3天收益-1）（50%/50%）
     /// </summary>
     public GameObject bwDes;
-    public bool badWordFirstClick = true;
     public void BadWord()
     {
         if (GameManager.instance.TanChuangZhuangTai)
             return;
         VoiceManager.instance.ClickTiezhi();
-        if (!badWordFirstClick) return;
-        badWordFirstClick = false;
+        if (!DataManager.instance.BWFirstClick) return;
+        DataManager.instance.BWFirstClick = false;
         pen.GetComponent<Npc>().CloseAll();
         mask.GetComponent<Npc>().CloseAll();
         drum.GetComponent<Npc>().CloseAll();
